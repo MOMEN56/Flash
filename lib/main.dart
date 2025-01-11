@@ -13,6 +13,7 @@ class Flash extends StatelessWidget {
       home: Scaffold(
         body: Expanded(
           child: Container(
+            
           color: Color(0xff100B20),
           ),
         ),
