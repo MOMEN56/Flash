@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 style: TextStyle(
                   fontFamily: 'PassionOne',
                   color: Colors.white,
-                  fontSize: 110
+                  fontSize: 80.sp
                       .sp, // استخدام flutter_screenutil لضبط الحجم بناءً على الشاشة
                   fontWeight: FontWeight.bold,
                 ),
@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
               duration: const Duration(seconds: 1), // مدة الأنيميشن
               child: Icon(
                 Icons.flash_on,
-                size: 110
+                size: 95.w
                     .sp, // استخدام flutter_screenutil لضبط حجم الأيقونة بناءً على الشاشة
                 color: Colors.yellow,
               ),
