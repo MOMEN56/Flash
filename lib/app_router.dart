@@ -8,7 +8,7 @@ class AppRouter {
       case '/splash':
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case '/homeScreen': // اسم الشاشة الثانية هو HomeScreen
-        return MaterialPageRoute(builder: (_) => const HomeScreen()); // استبدل بـ HomeScreen الفعلي
+        return MaterialPageRoute(builder: (_) =>  HomeScreen()); // استبدل بـ HomeScreen الفعلي
       default:
         return null;
     }

@@ -1,6 +1,7 @@
 import 'package:flash/business_logic/cubit/currencies_cubit.dart';
 import 'package:flash/constants.dart';
 import 'package:flash/data/repository/currency_repository.dart';
+import 'package:flash/presentation/screens/home_screen.dart';
 import 'package:flash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,8 +28,8 @@ class Flash extends StatelessWidget {
             theme: ThemeData().copyWith(
               scaffoldBackgroundColor: const Color(kPrimaryColor),
             ),
-            onGenerateRoute: AppRouter().generateRoute, // ربط التوجيه مع AppRouter
-            home: const SplashScreen(),
+            //onGenerateRoute: AppRouter().generateRoute, // ربط التوجيه مع AppRouter
+            home:  HomeScreen(),
             debugShowCheckedModeBanner: false,
           ),
         );

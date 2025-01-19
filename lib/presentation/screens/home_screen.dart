@@ -1,59 +1,99 @@
-import 'package:flash/business_logic/cubit/currencies_cubit.dart';
+import 'package:flash/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // استخدام BlocBuilder
+import 'package:flash/presentation/widgets/custom_app_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:dio/dio.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Map<String, dynamic>? rates; // لتخزين أسعار العملات
+  bool isLoading = true; // للتحكم في حالة التحميل
+  String errorMessage = ''; // لتخزين رسائل الخطأ
+
+  // جلب البيانات من الـ API
+  Future<void> fetchRates() async {
+    try {
+      const url = baseUrl;
+      final dio = Dio();
+      final response = await dio.get(url);
+
+      if (response.statusCode == 200) {
+        setState(() {
+          rates = response.data['conversion_rates']; 
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          errorMessage = 'Failed to load data.';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'An error occurred: $e';
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRates(); // جلب البيانات عند تحميل الشاشة
+  }
 
   @override
   Widget build(BuildContext context) {
-    // التأكد من استدعاء الدالة
-    context.read<CurrenciesCubit>().fetchCurrencies();
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Currency Rates')),
-      body: BlocBuilder<CurrenciesCubit, CurrenciesState>(
-        builder: (context, state) {
-          if (state is CurrenciesLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is CurrenciesLoaded) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: DataTable(
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Text(
-                        'Currency',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+      appBar: CustomAppBar(),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator()) // مؤشر تحميل أثناء جلب البيانات
+          : errorMessage.isNotEmpty
+              ? Center(child: Text(errorMessage)) // في حالة حدوث خطأ
+              : ListView.separated(
+                  itemCount: rates?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    // الحصول على اسم العملة وسعرها
+                    final currency = rates!.keys.elementAt(index);
+                    final rate = rates![currency];
+
+                    return ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                        children: [
+                          Text(
+                            currency, // اسم العملة
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            rate.toString(), // سعر العملة
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Exchange Rate',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                  rows: state.currencies.map<DataRow>((currency) {
-                    return DataRow(cells: [
-                      DataCell(
-                        Text(currency.result), // عرض اسم العملة
-                      ),
-                      DataCell(
-                        Text(currency.conversionRates.toString()), // عرض السعر
-                      ),
-                    ]);
-                  }).toList(),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      color: Colors.white, 
+                      thickness: 2,
+                    );
+                  },
                 ),
-              ),
-            );
-          } else if (state is CurrenciesError) {
-            return Center(child: Text(state.message));
-          }
-          return const Center(child: Text('Something went wrong'));
-        },
-      ),
     );
   }
 }
