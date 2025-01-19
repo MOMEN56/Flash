@@ -1,15 +1,21 @@
 import 'package:dio/dio.dart';
+import 'package:flash/data/models/currency_model.dart';
+import 'package:flash/data/web_services/currencies_web_services.dart';
 
-class CurrencyRepository {
+class CurrenciesRepository {
   final Dio _dio = Dio();
 
-  Future<List<Currency>> getCurrencies() async {
+  CurrenciesRepository(CurrenciesWebServices currenciesWebServices);
+
+  Future<List<CurrencyModel>> getAllCurrencies() async {
+    // تعديل النوع
     try {
-      final response = await _dio.get('https://v6.exchangerate-api.com/v6/cece996ffe0a030451cb4f5a/latest/USD');
+      final response = await _dio.get(
+          'https://v6.exchangerate-api.com/v6/cece996ffe0a030451cb4f5a/latest/USD');
       if (response.statusCode == 200) {
-        // تأكد من معالجة البيانات بشكل صحيح
         final data = response.data;
-        List<Currency> currencies = parseCurrencies(data);
+        List<CurrencyModel> currencies =
+            parseCurrencies(data); // التأكد من استخدام النوع الموحد
         return currencies;
       } else {
         throw Exception('Failed to load currencies');
@@ -19,17 +25,9 @@ class CurrencyRepository {
     }
   }
 
-  List<Currency> parseCurrencies(Map<String, dynamic> data) {
-    // استخرج البيانات المناسبة من API
-    return data['conversion_rates'].entries.map<Currency>((entry) {
-      return Currency(result: entry.key, conversionRates: entry.value);
+  List<CurrencyModel> parseCurrencies(Map<String, dynamic> data) {
+    return data['conversion_rates'].entries.map<CurrencyModel>((entry) {
+      return CurrencyModel(result: entry.key, conversionRates: entry.value);
     }).toList();
   }
-}
-
-class Currency {
-  final String result;
-  final double conversionRates;
-
-  Currency({required this.result, required this.conversionRates});
 }

@@ -1,5 +1,6 @@
 import 'package:flash/business_logic/cubit/currencies_cubit.dart';
 import 'package:flash/constants.dart';
+import 'package:flash/data/repository/currency_repository.dart';
 import 'package:flash/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

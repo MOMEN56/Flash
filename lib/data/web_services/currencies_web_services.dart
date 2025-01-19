@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flash/data/models/currency_model.dart';
 import 'package:flash/constants.dart';
-import 'package:flutter/widgets.dart'; // تأكد من المسار الصحيح
+import 'package:flutter/widgets.dart';
 
 class CurrenciesWebServices {
   late Dio dio;
@@ -31,10 +31,19 @@ class CurrenciesWebServices {
         // طباعة محتويات conversionRates للتأكد
         debugPrint('Conversion Rates: $conversionRates');
 
-        List<CurrencyModel> currencies = [];
+        // تحويل الخريطة إلى خريطة من نوع double
+        Map<String, double> conversionRatesMap = {};
         conversionRates.forEach((key, value) {
-          currencies.add(CurrencyModel(result: data['result'], conversionRates: {key: value.toDouble()}));
+          conversionRatesMap[key] = double.tryParse(value.toString()) ?? 0.0;
         });
+
+        // إنشاء قائمة من CurrencyModel
+        List<CurrencyModel> currencies = [
+          CurrencyModel(
+            result: data['result'],
+            conversionRates: conversionRatesMap,
+          ),
+        ];
 
         return currencies;
       } else {

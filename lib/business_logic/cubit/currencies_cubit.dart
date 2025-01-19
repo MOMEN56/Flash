@@ -1,6 +1,7 @@
 library currencies_cubit;
 
 import 'package:flash/data/models/currency_model.dart';
+import 'package:flash/data/repository/currency_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -15,9 +16,16 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
     try {
       emit(CurrenciesLoading());
       final currencies = await currenciesRepository.getAllCurrencies();
-      emit(CurrenciesLoaded(currencies)); // تصدر حالة العملات المحملة
+      // تحويل العملات إلى النوع المتوقع
+      final currenciesModel = currencies.map((currency) {
+        return CurrencyModel(
+          result: currency.result,
+          conversionRates: currency.conversionRates,
+        );
+      }).toList();
+      emit(CurrenciesLoaded(currenciesModel));
     } catch (e) {
-      emit(CurrenciesError('حدث خطأ أثناء جلب العملات: $e')); // تصدر حالة الخطأ
+      emit(CurrenciesError('حدث خطأ أثناء جلب العملات: $e'));
     }
   }
 }

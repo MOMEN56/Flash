@@ -8,13 +8,11 @@ class CurrenciesInitial extends CurrenciesState {}
 class CurrenciesLoading extends CurrenciesState {}
 
 class CurrenciesLoaded extends CurrenciesState {
-  final List<CurrencyModel> currencies;
-
+  final List<CurrencyModel> currencies; // استخدام النوع الموحد
   CurrenciesLoaded(this.currencies);
 }
 
 class CurrenciesError extends CurrenciesState {
   final String message;
-
   CurrenciesError(this.message);
 }
