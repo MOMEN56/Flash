@@ -1,5 +1,3 @@
-library currencies_cubit;
-
 import 'package:flash/data/models/currency_model.dart';
 import 'package:flash/data/repository/currency_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

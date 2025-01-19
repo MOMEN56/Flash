@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flash/data/models/currency_model.dart';
 import 'package:flash/constants.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flash/data/models/currency_model.dart';
 
 class CurrenciesWebServices {
   late Dio dio;
@@ -17,42 +16,42 @@ class CurrenciesWebServices {
   }
 
   // دالة لجلب العملات
-  Future<List<CurrencyModel>> getAllCurrencies() async {
+  Future<List<CurrencyModel>> getAllCurrencies(String currency) async {
     try {
-      Response response = await dio.get(baseCurrency); // استخدام baseUrl مع العملة
-      var data = response.data;
+      // هنا يتم استخدام العملة في الرابط بدلاً من تحديد "USD" بشكل ثابت
+      Response response = await dio.get(currency);
+      print('Response: ${response.data}');
 
-      // طباعة البيانات التي تم إرجاعها من الـ API
-      debugPrint('Response Data: $data'); // تحقق من محتوى البيانات
+      if (response.statusCode == 200) {
+        var data = response.data;
 
-      if (data != null && data.containsKey('result') && data.containsKey('conversion_rates')) {
-        var conversionRates = data['conversion_rates'] as Map<String, dynamic>;
+        // تحقق من أن البيانات صحيحة قبل البدء في معالجتها
+        if (data != null &&
+            data.containsKey('result') &&
+            data.containsKey('conversion_rates')) {
+          var conversionRates =
+              data['conversion_rates'] as Map<String, dynamic>;
 
-        // طباعة محتويات conversionRates للتأكد
-        debugPrint('Conversion Rates: $conversionRates');
+          Map<String, double> conversionRatesMap = {};
+          conversionRates.forEach((key, value) {
+            conversionRatesMap[key] = double.tryParse(value.toString()) ?? 0.0;
+          });
 
-        // تحويل الخريطة إلى خريطة من نوع double
-        Map<String, double> conversionRatesMap = {};
-        conversionRates.forEach((key, value) {
-          conversionRatesMap[key] = double.tryParse(value.toString()) ?? 0.0;
-        });
-
-        // إنشاء قائمة من CurrencyModel
-        List<CurrencyModel> currencies = [
-          CurrencyModel(
-            result: data['result'],
-            conversionRates: conversionRatesMap,
-          ),
-        ];
-
-        return currencies;
+          // الآن نعيد كائن من نوع CurrencyModel مع البيانات المناسبة
+          return [
+            CurrencyModel(
+              result: data['result'],
+              conversionRates: conversionRatesMap,
+            ),
+          ];
+        } else {
+          throw Exception("البيانات غير صحيحة");
+        }
       } else {
-        throw Exception("البيانات المفقودة من الـ API");
+        throw Exception('Failed to load currencies');
       }
     } catch (e) {
-      // طباعة الخطأ لمساعدتك في تحديد المشكلة
-      debugPrint('حدث خطأ أثناء جلب البيانات: $e');
-      throw Exception('حدث خطأ أثناء جلب البيانات: $e');
+      throw Exception('Error fetching currencies: $e');
     }
   }
 }

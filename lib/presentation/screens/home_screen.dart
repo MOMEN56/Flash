@@ -7,6 +7,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // التأكد من استدعاء الدالة
+    context.read<CurrenciesCubit>().fetchCurrencies();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Currency Rates')),
       body: BlocBuilder<CurrenciesCubit, CurrenciesState>(
@@ -14,16 +17,36 @@ class HomeScreen extends StatelessWidget {
           if (state is CurrenciesLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is CurrenciesLoaded) {
-            // عرض العملات بعد تحميلها
-            return ListView.builder(
-              itemCount: state.currencies.length,
-              itemBuilder: (context, index) {
-                var currency = state.currencies[index];
-                return ListTile(
-                  title: Text(currency.result),
-                  subtitle: Text(currency.conversionRates.toString()),
-                );
-              },
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: DataTable(
+                  columns: const <DataColumn>[
+                    DataColumn(
+                      label: Text(
+                        'Currency',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Exchange Rate',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                  rows: state.currencies.map<DataRow>((currency) {
+                    return DataRow(cells: [
+                      DataCell(
+                        Text(currency.result), // عرض اسم العملة
+                      ),
+                      DataCell(
+                        Text(currency.conversionRates.toString()), // عرض السعر
+                      ),
+                    ]);
+                  }).toList(),
+                ),
+              ),
             );
           } else if (state is CurrenciesError) {
             return Center(child: Text(state.message));
