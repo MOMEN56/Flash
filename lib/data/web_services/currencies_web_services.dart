@@ -1,57 +1,23 @@
+// currencies_web_service.dart
 import 'package:dio/dio.dart';
 import 'package:flash/constants.dart';
-import 'package:flash/data/models/currency_model.dart';
 
-class CurrenciesWebServices {
-  late Dio dio;
+class CurrenciesWebService {
+  final Dio dio;
 
-  CurrenciesWebServices() {
-    BaseOptions options = BaseOptions(
-      baseUrl: baseUrl, // عنوان الـ API
-      receiveDataWhenStatusError: true,
-      connectTimeout: const Duration(seconds: 20),
-      receiveTimeout: const Duration(seconds: 20),
-    );
-    dio = Dio(options);
-  }
+  CurrenciesWebService({required this.dio});
 
   // دالة لجلب العملات
-  Future<List<CurrencyModel>> getAllCurrencies(String currency) async {
+  Future<Map<String, dynamic>> fetchRates() async {
     try {
-      // هنا يتم استخدام العملة في الرابط بدلاً من تحديد "USD" بشكل ثابت
-      Response response = await dio.get(currency);
-      print('Response: ${response.data}');
-
+      final response = await dio.get(baseUrl);
       if (response.statusCode == 200) {
-        var data = response.data;
-
-        // تحقق من أن البيانات صحيحة قبل البدء في معالجتها
-        if (data != null &&
-            data.containsKey('result') &&
-            data.containsKey('conversion_rates')) {
-          var conversionRates =
-              data['conversion_rates'] as Map<String, dynamic>;
-
-          Map<String, double> conversionRatesMap = {};
-          conversionRates.forEach((key, value) {
-            conversionRatesMap[key] = double.tryParse(value.toString()) ?? 0.0;
-          });
-
-          // الآن نعيد كائن من نوع CurrencyModel مع البيانات المناسبة
-          return [
-            CurrencyModel(
-              result: data['result'],
-              conversionRates: conversionRatesMap,
-            ),
-          ];
-        } else {
-          throw Exception("البيانات غير صحيحة");
-        }
+        return response.data['conversion_rates'];
       } else {
-        throw Exception('Failed to load currencies');
+        throw Exception('Failed to load rates');
       }
     } catch (e) {
-      throw Exception('Error fetching currencies: $e');
+      throw Exception('Error occurred: $e');
     }
   }
 }

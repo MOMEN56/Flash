@@ -1,4 +1,5 @@
 import 'package:flash/constants.dart';
+import 'package:flash/data/web_services/currencies_web_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,28 +13,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Map<String, dynamic>? rates; // لتخزين أسعار العملات
-  bool isLoading = true; // للتحكم في حالة التحميل
-  String errorMessage = ''; // لتخزين رسائل الخطأ
+  Map<String, dynamic>? rates;
+  bool isLoading = true;
+  String errorMessage = '';
+  
+  // إنشاء مثيل من الخدمة المعدلة
+  final CurrenciesWebService _currenciesWebService = CurrenciesWebService(dio: Dio());
 
   // جلب البيانات من الـ API
   Future<void> fetchRates() async {
     try {
-      const url = baseUrl;
-      final dio = Dio();
-      final response = await dio.get(url);
-
-      if (response.statusCode == 200) {
-        setState(() {
-          rates = response.data['conversion_rates']; 
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          errorMessage = 'Failed to load data.';
-          isLoading = false;
-        });
-      }
+      final fetchedRates = await _currenciesWebService.fetchRates();
+      setState(() {
+        rates = fetchedRates;
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
         errorMessage = 'An error occurred: $e';
@@ -59,13 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
               : ListView.separated(
                   itemCount: rates?.length ?? 0,
                   itemBuilder: (context, index) {
-                    // الحصول على اسم العملة وسعرها
                     final currency = rates!.keys.elementAt(index);
                     final rate = rates![currency];
 
                     return ListTile(
                       title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             currency, // اسم العملة
@@ -89,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   separatorBuilder: (context, index) {
                     return Divider(
-                      color: Colors.white, 
+                      color: Colors.white,
                       thickness: 2,
                     );
                   },
