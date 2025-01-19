@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// إضافة AppRouter
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,8 +10,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  double _opacityText = 0; // البداية ستكون صفر (غير مرئي)
-  double _opacityIcon = 0; // البداية ستكون صفر (غير مرئي)
+  double _opacityText = 0;
+  double _opacityIcon = 0;
 
   @override
   void initState() {
@@ -18,18 +19,22 @@ class _SplashScreenState extends State<SplashScreen> {
     _startAnimation();
   }
 
-  // بدء الأنيميشن بعد تأخير
   void _startAnimation() {
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
-        _opacityText = 1; // النص يظهر بعد 1 ثانية
+        _opacityText = 1;
       });
     });
 
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
-        _opacityIcon = 1; // الأيقونة تظهر بعد 2 ثانية
+        _opacityIcon = 1;
       });
+    });
+
+    // التوجيه بعد 3 ثواني
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(context, '/homeScreen'); // التوجيه إلى HomeScreen
     });
   }
 
@@ -38,29 +43,27 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Center(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedOpacity(
               opacity: _opacityText,
-              duration: const Duration(seconds: 1), // مدة الأنيميشن
+              duration: const Duration(seconds: 1),
               child: Text(
                 "Flash",
                 style: TextStyle(
                   fontFamily: 'PassionOne',
                   color: Colors.white,
-                  fontSize: 80.sp
-                      .sp, // استخدام flutter_screenutil لضبط الحجم بناءً على الشاشة
+                  fontSize: 80.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             AnimatedOpacity(
               opacity: _opacityIcon,
-              duration: const Duration(seconds: 1), // مدة الأنيميشن
+              duration: const Duration(seconds: 1),
               child: Icon(
                 Icons.flash_on,
-                size: 95.w
-                    .sp, // استخدام flutter_screenutil لضبط حجم الأيقونة بناءً على الشاشة
+                size: 95.w,
                 color: Colors.yellow,
               ),
             ),
