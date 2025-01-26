@@ -9,6 +9,11 @@ class CurrencyFlag {
   // جلب رابط علم الدولة بناءً على العملة
   Future<String?> fetchFlagByCurrency(String currencyCode) async {
     try {
+      // إذا كانت العملة هي USD، نرجع رابط علم الولايات المتحدة مباشرة
+      if (currencyCode == 'USD') {
+        return 'https://flagcdn.com/w320/us.png'; // رابط علم الولايات المتحدة
+      }
+
       // طلب البيانات من API الدول
       final response = await dio.get('https://restcountries.com/v3.1/all');
       if (response.statusCode == 200) {

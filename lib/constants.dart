@@ -1,4 +1,4 @@
-const int kPrimaryColor = 0xff100B20;
+const int kPrimaryColor = 0xff1c0518;
 
 //const String baseCurrency = "USD";
 const String baseUrl =
