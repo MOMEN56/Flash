@@ -14,6 +14,11 @@ class CurrencyFlag {
         return 'https://flagcdn.com/w320/us.png'; // رابط علم الولايات المتحدة
       }
 
+      // إذا كانت العملة هي EUR (اليورو)، نرجع رابط علم الاتحاد الأوروبي
+      if (currencyCode == 'EUR') {
+        return 'https://flagcdn.com/w320/eu.png'; // رابط علم الاتحاد الأوروبي
+      }
+
       // طلب البيانات من API الدول
       final response = await dio.get('https://restcountries.com/v3.1/all');
       if (response.statusCode == 200) {
