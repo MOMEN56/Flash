@@ -7,7 +7,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Size preferredSize;
 
   CustomAppBar({Key? key})
-      : preferredSize = Size.fromHeight(kToolbarHeight),
+      : preferredSize = Size.fromHeight(kToolbarHeight-10),
         super(key: key);
 
   @override
@@ -15,6 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Color(kPrimaryColor),
       title: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(

@@ -1,4 +1,3 @@
-import 'package:flash/constants.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
 import 'package:flash/data/web_services/currency_flag_services.dart';
 import 'package:flutter/material.dart';
@@ -80,11 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 begin: const Offset(1, 0),
                                 end: const Offset(0, 0))),
                             child: Container(
+                              height: 72.h,
                               margin: EdgeInsets.symmetric(
-                                  vertical: 8.h, horizontal: 16.w),
+                                  vertical: 8.h, horizontal: 12.w),
                               decoration: BoxDecoration(
                                 color: Color(0xFF5d6d7e),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.1),
@@ -93,44 +93,47 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ],
                               ),
-                              child: ListTile(
-                                leading: FutureBuilder<String?>(
-                                  future: _currencyFlag.fetchFlagByCurrency(currency),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return const Icon(Icons.error); // في حالة حدوث خطأ في تحميل العلم
-                                    } else if (snapshot.hasData) {
-                                      return CircleAvatar(
-                                        backgroundImage: NetworkImage(snapshot.data!),
-                                      );
-                                    } else {
-                                      return const Icon(Icons.flag); // في حالة عدم وجود علم
-                                    }
-                                  },
-                                ),
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      currency, // اسم العملة
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
+                              child: Center(
+                                child: ListTile(
+                                  leading: FutureBuilder<String?>(
+                                    future: _currencyFlag.fetchFlagByCurrency(currency),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        return const Icon(Icons.error); // في حالة حدوث خطأ في تحميل العلم
+                                      } else if (snapshot.hasData) {
+                                        return CircleAvatar(
+                                          radius: 32,
+                                          backgroundImage: NetworkImage(snapshot.data!),
+                                        );
+                                      } else {
+                                        return const Icon(Icons.flag); // في حالة عدم وجود علم
+                                      }
+                                    },
+                                  ),
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        currency, // اسم العملة
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 24.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      rate.toString(), // سعر العملة
-                                      style: TextStyle(
-                                        color: const Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 22.sp,
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        rate.toString(), // سعر العملة
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 24.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

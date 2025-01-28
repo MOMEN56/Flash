@@ -29,7 +29,7 @@ class Flash extends StatelessWidget {
               scaffoldBackgroundColor: const Color(kPrimaryColor),
             ),
             onGenerateRoute: AppRouter().generateRoute, // ربط التوجيه مع AppRouter
-            home: SplashScreen(),
+            home: HomeScreen(),
             debugShowCheckedModeBanner: false,
           ),
         );
