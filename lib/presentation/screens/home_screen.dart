@@ -35,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = false;
         currencyList.clear();
         currencyList.addAll(rates!.keys);
+        filteredCurrencyList.clear();  // تأكد من إضافة جميع العملات للفلترة
+        filteredCurrencyList.addAll(currencyList);
         _insertItems();
       });
     } catch (e) {
@@ -62,9 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         filteredCurrencyList.clear();
         filteredCurrencyList.addAll(currencyList
-            .where((currency) => currency
-                .toLowerCase()
-                .startsWith(searchedCurrency.toLowerCase()))
+            .where((currency) =>
+                currency.toLowerCase().startsWith(searchedCurrency.toLowerCase()))
             .toList());
       }
       errorMessage = filteredCurrencyList.isEmpty
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    fetchRates();
+    fetchRates();  // استدعاء البيانات فورًا عند بدء الصفحة
   }
 
   void _startSearch() {
@@ -115,21 +116,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Icon(
+                        Icons.error,
+                        color: Colors.white,
+                        size: 32.sp, // حجم الأيقونة
+                      ),
+                      SizedBox(width: 8.w), // مساحة بين الأيقونة والنص
                       Text(
                         errorMessage,
                         style: TextStyle(
                           color: Colors.white, // اللون الأبيض
-                          fontSize: 16.sp, // حجم الخط أكبر
+                          fontSize: 24.sp, // حجم الخط أكبر
                           fontWeight: FontWeight.bold, // جعل الخط عريضًا
                         ),
                       ),
-                      SizedBox(width: 8.w),
-                      Icon(
-                        Icons.error,
-                        color: Colors.red,
-                        size: 32.sp, // حجم الأيقونة
-                      ),
-                      // مساحة بين الأيقونة والنص
                     ],
                   ),
                 )
