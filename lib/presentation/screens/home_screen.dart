@@ -1,12 +1,13 @@
-import 'package:flash/data/web_services/currencies_web_services.dart';
-import 'package:flash/data/web_services/currency_flag_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flash/presentation/widgets/currency_search_widget.dart';
+import 'package:flash/data/web_services/currencies_web_services.dart';
+import 'package:flash/data/web_services/currency_flag_services.dart';
 import 'package:dio/dio.dart';
-import 'package:flash/presentation/widgets/custom_app_bar.dart'; // تأكد من استيراد AppBar الخاص بك
+import 'package:flash/presentation/widgets/custom_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -15,23 +16,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? rates;
   bool isLoading = true;
+  bool _isSearching = false;
+  final _searchTextController = TextEditingController();
   String errorMessage = '';
   final List<String> currencyList = [];
+  final List<String> filteredCurrencyList = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
   final CurrenciesWebService _currenciesWebService =
       CurrenciesWebService(dio: Dio());
   final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
 
-  // جلب البيانات من الـ API
   Future<void> fetchRates() async {
     try {
       final fetchedRates = await _currenciesWebService.fetchRates();
       setState(() {
         rates = fetchedRates;
         isLoading = false;
-        currencyList.clear(); // مسح القائمة القديمة
-        currencyList.addAll(rates!.keys); // إضافة العملات الجديدة للقائمة
+        currencyList.clear();
+        currencyList.addAll(rates!.keys);
         _insertItems();
       });
     } catch (e) {
@@ -43,101 +46,174 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _insertItems() {
-    for (int i = 0; i < currencyList.length; i++) {
-      _listKey.currentState?.insertItem(i);
+    // تأكد من أن الفهرس ضمن نطاق القوائم
+    for (int i = 0; i < filteredCurrencyList.length; i++) {
+      if (i < filteredCurrencyList.length) {
+        _listKey.currentState?.insertItem(i);
+      }
     }
+  }
+
+  void addSearchedForCurrencyToSearchedList(String searchedCurrency) {
+    setState(() {
+      if (searchedCurrency.isEmpty) {
+        filteredCurrencyList.clear();
+        filteredCurrencyList.addAll(currencyList);
+      } else {
+        filteredCurrencyList.clear();
+        filteredCurrencyList.addAll(currencyList
+            .where((currency) => currency
+                .toLowerCase()
+                .startsWith(searchedCurrency.toLowerCase()))
+            .toList());
+      }
+      errorMessage = filteredCurrencyList.isEmpty
+          ? 'No currencies found for your search!'
+          : '';
+      _insertItems();
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchRates(); // جلب البيانات عند تحميل الشاشة
+    fetchRates();
+  }
+
+  void _startSearch() {
+    setState(() {
+      _isSearching = true;
+    });
+  }
+
+  void _stopSearching() {
+    setState(() {
+      _isSearching = false;
+      _searchTextController.clear();
+      addSearchedForCurrencyToSearchedList('');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(), // إعادة إضافة الـ AppBar كما في الكود الأصلي
+      appBar: _isSearching
+          ? PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight),
+              child: CurrencySearchWidget(
+                searchTextController: _searchTextController,
+                addSearchedForCurrencyToSearchedList:
+                    addSearchedForCurrencyToSearchedList,
+                onBackPressed: _stopSearching,
+              ),
+            )
+          : CustomAppBar(onSearchPressed: _startSearch),
       body: isLoading
-          ? Center(
-              child:
-                  CircularProgressIndicator()) // مؤشر تحميل أثناء جلب البيانات
+          ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
-              ? Center(child: Text(errorMessage)) // في حالة حدوث خطأ
+              ? Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        errorMessage,
+                        style: TextStyle(
+                          color: Colors.white, // اللون الأبيض
+                          fontSize: 16.sp, // حجم الخط أكبر
+                          fontWeight: FontWeight.bold, // جعل الخط عريضًا
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 32.sp, // حجم الأيقونة
+                      ),
+                      // مساحة بين الأيقونة والنص
+                    ],
+                  ),
+                )
               : Column(
                   children: [
                     Expanded(
                       child: AnimatedList(
                         key: _listKey,
-                        initialItemCount: currencyList.length,
+                        initialItemCount: filteredCurrencyList.length,
                         itemBuilder: (context, index, animation) {
-                          final currency = currencyList[index];
-                          final rate = rates![currency];
+                          // تأكد من أن الفهرس ضمن نطاق القائمة
+                          if (index < filteredCurrencyList.length) {
+                            final currency = filteredCurrencyList[index];
+                            final rate = rates![currency];
 
-                          return SlideTransition(
-                            position: animation.drive(Tween<Offset>(
-                                begin: const Offset(1, 0),
-                                end: const Offset(0, 0))),
-                            child: Container(
-                              height: 72.h,
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 8.h, horizontal: 12.w),
-                              decoration: BoxDecoration(
-                                color: Color(0xFF5d6d7e),
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 6,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: ListTile(
-                                  leading: FutureBuilder<String?>(
-                                    future: _currencyFlag.fetchFlagByCurrency(currency),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return const CircularProgressIndicator();
-                                      } else if (snapshot.hasError) {
-                                        return const Icon(Icons.error); // في حالة حدوث خطأ في تحميل العلم
-                                      } else if (snapshot.hasData) {
-                                        return CircleAvatar(
-                                          radius: 32,
-                                          backgroundImage: NetworkImage(snapshot.data!),
-                                        );
-                                      } else {
-                                        return const Icon(Icons.flag); // في حالة عدم وجود علم
-                                      }
-                                    },
-                                  ),
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        currency, // اسم العملة
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 24.sp,
-                                          fontWeight: FontWeight.bold,
+                            return SlideTransition(
+                              position: animation.drive(Tween<Offset>(
+                                  begin: const Offset(1, 0),
+                                  end: const Offset(0, 0))),
+                              child: Container(
+                                height: 72.h,
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 8.h, horizontal: 12.w),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF5d6d7e),
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 6,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: ListTile(
+                                    leading: FutureBuilder<String?>(
+                                      future: _currencyFlag
+                                          .fetchFlagByCurrency(currency),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const CircularProgressIndicator();
+                                        } else if (snapshot.hasError) {
+                                          return const Icon(Icons.error);
+                                        } else if (snapshot.hasData) {
+                                          return CircleAvatar(
+                                            radius: 32,
+                                            backgroundImage:
+                                                NetworkImage(snapshot.data!),
+                                          );
+                                        } else {
+                                          return const Icon(Icons.flag);
+                                        }
+                                      },
+                                    ),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          currency,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 24.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        rate.toString(), // سعر العملة
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(255, 0, 0, 0),
-                                          fontSize: 24.sp,
-                                          fontWeight: FontWeight.bold,
+                                        Text(
+                                          rate.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 24.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
+                            );
+                          }
+                          return SizedBox.shrink();
                         },
                       ),
                     ),

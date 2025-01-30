@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback onSearchPressed;
+
+  CustomAppBar({super.key, required this.onSearchPressed})
+      : preferredSize = Size.fromHeight(kToolbarHeight - 10);
+
   @override
   final Size preferredSize;
-
-  CustomAppBar({Key? key})
-      : preferredSize = Size.fromHeight(kToolbarHeight-10),
-        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(kPrimaryColor),
+      backgroundColor: Color(kPrimaryColor), // يمكنك تغيير اللون هنا
       title: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
@@ -27,13 +27,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Icon(
-            Icons.flash_on,
-            size: 55.w,
-            color: Colors.yellow,
-          ),
+          Icon(Icons.flash_on, size: 55.w, color: Colors.yellow),
         ],
       ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.search, color: Colors.white),
+          onPressed: onSearchPressed,
+        ),
+      ],
     );
   }
 }
