@@ -15,7 +15,8 @@ dependencies:
   flutter_bloc: ^8.0.0
   dio: ^5.7.0
   meta: ^1.15.0
-
+  flutter_offline: ^4.0.0
+  connectivity_plus: ^6.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -24,7 +25,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-       - assets/
+       - assets/images/
 
   fonts:
     - family: PassionOne

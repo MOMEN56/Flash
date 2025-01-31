@@ -1,3 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.sourceDirectory": "D:/flutter/flash/linux",
+    "dart.flutterSdkPath": "C:\\scr\\flutter"
 }
