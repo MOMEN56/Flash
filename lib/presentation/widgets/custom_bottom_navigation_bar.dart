@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flash/constants.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -16,17 +17,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      items: const [
+      items:  [
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
+          icon: Icon(Icons.favorite,size: 22.w),
           label: 'favorite',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.currency_bitcoin),
+          icon: Icon(Icons.currency_bitcoin,size: 22.w),
           label: 'crypto',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.attach_money),
+          icon: Icon(Icons.attach_money,size: 22.w),
           label: 'currency',
         ),
       ],

@@ -1,3 +1,4 @@
+import 'package:flash/constants.dart';
 import 'package:flash/presentation/widgets/currency_search_widget.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
@@ -30,9 +31,18 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
 
   int _currentIndex = 0; // حفظ حالة العنصر المحدد في الشريط السفلي
 
+  // دالة لتقريب الأرقام إلى 7 أرقام بعد الفاصلة العشرية
+double roundTo7Digits(dynamic value) {
+  // التأكد من أن القيمة من النوع double
+  if (value is int) {
+    value = value.toDouble(); // تحويل int إلى double إذا كانت القيمة int
+  }
+  return double.parse(value.toStringAsFixed(7)); // التأكد من تحويلها إلى 7 أرقام بعد الفاصلة العشرية
+}
+
   Future<void> fetchRates() async {
     try {
-      final fetchedRates = await _currenciesWebService.fetchRates();
+      final fetchedRates = await _currenciesWebService.fetchRates(baseUrl);
       setState(() {
         rates = fetchedRates;
         isLoading = false;
@@ -75,23 +85,23 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchRates(); // استدعاء البيانات فورًا عند بدء الصفحة
-  }
-
-  void _startSearch() {
-    setState(() {
-      _isSearching = true;
-    });
-  }
-
   void _stopSearching() {
     setState(() {
       _isSearching = false;
       _searchTextController.clear();
       addSearchedForCurrencyToSearchedList('');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRates();
+  }
+
+  void _startSearch() {
+    setState(() {
+      _isSearching = true;
     });
   }
 
@@ -105,7 +115,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                 searchTextController: _searchTextController,
                 addSearchedForCurrencyToSearchedList:
                     addSearchedForCurrencyToSearchedList,
-                onBackPressed: _stopSearching,
+                onBackPressed: _stopSearching, // تم إصلاح الدالة هنا
               ),
             )
           : CustomAppBar(onSearchPressed: _startSearch),
@@ -143,67 +153,75 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                             final currency = filteredCurrencyList[index];
                             final rate = rates![currency];
 
-                            return SlideTransition(
-                              position: animation.drive(Tween<Offset>(
-                                  begin: const Offset(1, 0),
-                                  end: const Offset(0, 0))),
-                              child: Container(
-                                height: 72.5.h,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 8.h, horizontal: 12.w),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF5d6d7e),
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      blurRadius: 6,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: ListTile(
-                                    leading: FutureBuilder<String?>(
-                                      future: _currencyFlag
-                                          .fetchFlagByCurrency(currency),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return const CircularProgressIndicator();
-                                        } else if (snapshot.hasError) {
-                                          return const Icon(Icons.error);
-                                        } else if (snapshot.hasData) {
-                                          return CircleAvatar(
-                                            radius: 32,
-                                            backgroundImage:
-                                                NetworkImage(snapshot.data!),
-                                          );
-                                        } else {
-                                          return const Icon(Icons.flag);
-                                        }
-                                      },
-                                    ),
-                                    title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          currency,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 24.sp,
-                                            fontWeight: FontWeight.bold,
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  baseCurrency = currency; // تعيين العملة
+                                });
+                                // يمكنك إضافة أي إجراء إضافي هنا مثل التنقل إلى شاشة أخرى
+                              },
+                              child: SlideTransition(
+                                position: animation.drive(Tween<Offset>(
+                                    begin: const Offset(1, 0),
+                                    end: const Offset(0, 0))),
+                                child: Container(
+                                  height: 72.5.h,
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: 8.h, horizontal: 12.w),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF5d6d7e),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: ListTile(
+                                      leading: FutureBuilder<String?>( 
+                                        future: _currencyFlag
+                                            .fetchFlagByCurrency(currency),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const CircularProgressIndicator();
+                                          } else if (snapshot.hasError) {
+                                            return const Icon(Icons.error);
+                                          } else if (snapshot.hasData) {
+                                            return CircleAvatar(
+                                              radius: 32,
+                                              backgroundImage:
+                                                  NetworkImage(snapshot.data!),
+                                            );
+                                          } else {
+                                            return const Icon(Icons.flag);
+                                          }
+                                        },
+                                      ),
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            currency,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 24.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          rate.toString(),
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 24.sp,
-                                            fontWeight: FontWeight.bold,
+                                          Text(
+                                            roundTo7Digits(rate).toString(),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 24.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -215,10 +233,10 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                       ),
                     ),
                     CustomBottomNavigationBar(
-                      currentIndex: _currentIndex,  // تم تمرير currentIndex هنا
+                      currentIndex: _currentIndex, // تم تمرير currentIndex هنا
                       onTap: (index) {
                         setState(() {
-                          _currentIndex = index;  // تحديث قيمة currentIndex
+                          _currentIndex = index; // تحديث قيمة currentIndex
                         });
                       },
                     ),

@@ -1,4 +1,3 @@
-// currencies_web_service.dart
 import 'package:dio/dio.dart';
 import 'package:flash/constants.dart';
 
@@ -7,12 +6,12 @@ class CurrenciesWebService {
 
   CurrenciesWebService({required this.dio});
 
-  // دالة لجلب العملات
-  Future<Map<String, dynamic>> fetchRates() async {
+  // دالة لجلب العملات بناءً على baseUrl
+  Future<Map<String, dynamic>> fetchRates(String baseUrl) async {
     try {
-      final response = await dio.get(baseUrl);
+      final response = await dio.get(baseUrl);  // استخدم الـ baseUrl الذي يتم تمريره
       if (response.statusCode == 200) {
-        return response.data['conversion_rates'];
+        return response.data['conversion_rates'];  // العودة بمعدل التحويل
       } else {
         throw Exception('Failed to load rates');
       }
