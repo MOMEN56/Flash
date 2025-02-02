@@ -1,5 +1,6 @@
 import 'package:flash/presentation/widgets/currency_search_widget.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
+import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
@@ -26,6 +27,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final CurrenciesWebService _currenciesWebService =
       CurrenciesWebService(dio: Dio());
   final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
+
+  int _currentIndex = 0; // حفظ حالة العنصر المحدد في الشريط السفلي
 
   Future<void> fetchRates() async {
     try {
@@ -145,7 +148,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                   begin: const Offset(1, 0),
                                   end: const Offset(0, 0))),
                               child: Container(
-                                height: 72.h,
+                                height: 72.5.h,
                                 margin: EdgeInsets.symmetric(
                                     vertical: 8.h, horizontal: 12.w),
                                 decoration: BoxDecoration(
@@ -210,6 +213,14 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                           return SizedBox.shrink();
                         },
                       ),
+                    ),
+                    CustomBottomNavigationBar(
+                      currentIndex: _currentIndex,  // تم تمرير currentIndex هنا
+                      onTap: (index) {
+                        setState(() {
+                          _currentIndex = index;  // تحديث قيمة currentIndex
+                        });
+                      },
                     ),
                   ],
                 ),
