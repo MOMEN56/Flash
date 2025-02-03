@@ -27,8 +27,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final List<String> currencyList = [];
   final List<String> filteredCurrencyList = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
-  String url = "$baseUrl$baseCurrency";
-  // لتخزين حالة الـ "favorite" لكل عملة
+  final ScrollController _scrollController = ScrollController();  // إضافة ScrollController
+  String url = "$baseUrl$comparisonCurrency";
   Map<String, bool> favoriteCurrencies = {};
 
   final CurrenciesWebService _currenciesWebService =
@@ -119,11 +119,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
-              ?ErrorMessageWidget(errorMessage: errorMessage)
+              ? ErrorMessageWidget(errorMessage: errorMessage)
               : Column(
                   children: [
                     Expanded(
                       child: AnimatedList(
+                        controller: _scrollController,  // ربط ScrollController
                         key: _listKey,
                         initialItemCount: filteredCurrencyList.length,
                         itemBuilder: (context, index, animation) {
@@ -134,8 +135,19 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  baseCurrency = currency;
-                                  url = "$baseUrl$baseCurrency";
+                                  comparisonCurrency = currency; // تحديد العملة
+                                  url = "$baseUrl$comparisonCurrency";
+
+                                  // إعادة ترتيب القائمة بحيث تأتي العملة المقارنة أولًا
+                                  filteredCurrencyList.remove(currency);  // إزالة العملة
+                                  filteredCurrencyList.insert(0, currency);  // إدخال العملة أولًا
+
+                                  // تمرير الصفحة إلى أعلى
+                                  _scrollController.animateTo(
+                                    0,  // التمرير إلى أعلى
+                                    duration: Duration(milliseconds: 300), // مدة التمرير
+                                    curve: Curves.easeInOut,  // نوع التمرير
+                                  );
                                 });
                                 fetchRates();
                               },
@@ -173,9 +185,9 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               imageUrl: snapshot.data!,
                                               cacheManager: CacheManager(
                                                 Config(
-                                                  'customCacheKey', // يمكن استخدام أي اسم مميز للكاش
-                                                  stalePeriod: const Duration(
-                                                      days: 30), // مدة الكاش
+                                                  'customCacheKey',
+                                                  stalePeriod:
+                                                      const Duration(days: 30),
                                                   maxNrOfCacheObjects: 180,
                                                 ),
                                               ),
@@ -198,7 +210,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                       ),
                                       title: Row(
                                         children: [
-                                          // نص العملة
                                           Text(
                                             currency,
                                             style: TextStyle(
@@ -207,37 +218,44 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          // Spacer لدفع أيقونة الـ Favorite إلى أقصى اليمين
-                                          Spacer(),
-                                          // نص السعر
-                                          Text(
-                                            rate.toString(),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.sp,
-                                              fontWeight: FontWeight.bold,
+                                          if (currency != comparisonCurrency) ...[
+                                            Spacer(),
+                                            Text(
+                                              rate.toString(),
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          // أيقونة الـ Favorite
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.favorite,
-                                              size: 22.w,
-                                              color: favoriteCurrencies[
-                                                          currency] ??
-                                                      false
-                                                  ? Colors.red
-                                                  : Colors.grey,
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.favorite,
+                                                size: 20.w,
+                                                color: favoriteCurrencies[currency] ??
+                                                        false
+                                                    ? Colors.red
+                                                    : Colors.grey,
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  favoriteCurrencies[currency] =
+                                                      !(favoriteCurrencies[currency] ??
+                                                          false);
+                                                });
+                                              },
                                             ),
-                                            onPressed: () {
-                                              setState(() {
-                                                favoriteCurrencies[currency] =
-                                                    !(favoriteCurrencies[
-                                                            currency] ??
-                                                        false);
-                                              });
-                                            },
-                                          ),
+                                          ] else ...[
+                                            Spacer(),
+                                            Text(
+                                              'Base Currency',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         ],
                                       ),
                                     ),
