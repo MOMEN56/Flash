@@ -28,16 +28,15 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final List<String> currencyList = [];
   final List<String> filteredCurrencyList = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
-  final ScrollController _scrollController =
-      ScrollController(); // إضافة ScrollController
+  final ScrollController _scrollController = ScrollController();  // إضافة ScrollController
   String url = "$baseUrl$comparisonCurrency";
   Map<String, bool> favoriteCurrencies = {};
+
   final CurrenciesWebService _currenciesWebService =
       CurrenciesWebService(dio: Dio());
   final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
 
   int _currentIndex = 0;
-
   Future<void> fetchRates() async {
     try {
       final fetchedRates = await _currenciesWebService.fetchRates(url);
@@ -71,12 +70,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
       } else {
         filteredCurrencyList.clear();
         filteredCurrencyList.addAll(currencyList
-            .where((currency) => currency
-                .toLowerCase()
-                .startsWith(searchedCurrency.toLowerCase()))
+            .where((currency) =>
+                currency.toLowerCase().startsWith(searchedCurrency.toLowerCase()))
             .toList());
       }
-      errorMessage = filteredCurrencyList.isEmpty ? 'No currencies found' : '';
+      errorMessage =
+          filteredCurrencyList.isEmpty ? 'No currencies found' : '';
       _insertItems();
     });
   }
@@ -101,7 +100,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     });
   }
 
-  // دالة عند الضغط على عملة: تنفذ اهتزازًا، تعيد ترتيب القائمة (تمرير القائمة إلى أعلى) وتحدث العملة للمقارنة
+  // دالة عند الضغط على عملة: تنفذ اهتزازًا، تُعيد ترتيب القائمة وتُحدث العملة للمقارنة،
+  // بالإضافة إلى ضبط _isSearching لتصبح false.
   Future<void> _onCurrencyTap(String currency) async {
     // اهتزاز الهاتف
     if (await Vibration.hasVibrator() ?? false) {
@@ -109,6 +109,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     }
 
     setState(() {
+      _isSearching = false; // عند الضغط نجعل _isSearching = false
       comparisonCurrency = currency; // تعيين العملة للمقارنة
       url = "$baseUrl$comparisonCurrency";
 
@@ -229,10 +230,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          // إذا كانت العملة ليست عملة المقارنة، نعرض السعر وأيقونة المفضل
-                                          if (currency !=
-                                              comparisonCurrency) ...[
-                                            Spacer(flex: 10,),
+                                          if (currency != comparisonCurrency) ...[
+                                            Spacer(flex: 10),
                                             Text(
                                               rate.toString(),
                                               style: TextStyle(
@@ -245,8 +244,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               icon: Icon(
                                                 Icons.favorite,
                                                 size: 20.w,
-                                                color: favoriteCurrencies[
-                                                            currency] ??
+                                                color: favoriteCurrencies[currency] ??
                                                         false
                                                     ? Colors.red
                                                     : Colors.grey,
@@ -254,8 +252,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                   favoriteCurrencies[currency] =
-                                                      !(favoriteCurrencies[
-                                                              currency] ??
+                                                      !(favoriteCurrencies[currency] ??
                                                           false);
                                                 });
                                               },
@@ -264,7 +261,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                                 size: 22.w),
                                             Spacer(),
                                           ] else ...[
-                                            Spacer(flex: 1,),
+                                            Spacer(flex: 1),
                                             Text(
                                               'Comparison Currency',
                                               style: TextStyle(
@@ -273,13 +270,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            // هنا نعرض أيقونة المفضلة فقط في حالة عملة المقارنة
+                                            // في حالة العملة المقارنة نعرض أيقونة المفضلة فقط
                                             IconButton(
                                               icon: Icon(
                                                 Icons.favorite,
                                                 size: 20.w,
-                                                color: favoriteCurrencies[
-                                                            currency] ??
+                                                color: favoriteCurrencies[currency] ??
                                                         false
                                                     ? Colors.red
                                                     : Colors.grey,
@@ -287,13 +283,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                   favoriteCurrencies[currency] =
-                                                      !(favoriteCurrencies[
-                                                              currency] ??
+                                                      !(favoriteCurrencies[currency] ??
                                                           false);
                                                 });
                                               },
                                             ),
-                                            Spacer(flex: 1,),
+                                            Spacer(flex: 1),
                                           ],
                                         ],
                                       ),
