@@ -11,16 +11,6 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
 
   CurrenciesCubit(this.currenciesService) : super(CurrenciesInitial());
 
-  // دالة لتقريب الأرقام إلى 7 أرقام بعد الفاصلة
-  double roundTo7Digits(double number) {
-    // التأكد من أن العدد أكبر من 7 أرقام
-    if (number.toString().length > 7) {
-      return double.parse(number.toStringAsFixed(7));  // تقريبه إلى 7 أرقام بعد الفاصلة
-    } else {
-      return number;  // إذا كانت الأرقام أقل أو تساوي 7، نتركه كما هو
-    }
-  }
-
   // دالة لجلب العملات باستخدام baseCurrency
   Future<void> fetchCurrencies() async {
     try {
@@ -30,12 +20,9 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
 
       // تحويل البيانات إلى نماذج CurrencyModel
       final currenciesModel = rates.keys.map((currency) {
-        // تطبيق التقريب على السعر
-        final rate = roundTo7Digits(rates[currency].toDouble());
-
         return CurrencyModel(
           result: 'success', // استبدال القيمة الثابتة هنا حسب الحاجة
-          conversionRates: {currency: rate}, // إنشاء conversionRates باستخدام العملة
+          conversionRates: {currency: rates[currency]}, // إنشاء conversionRates باستخدام العملة
         );
       }).toList();
 

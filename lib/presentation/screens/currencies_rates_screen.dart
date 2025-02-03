@@ -1,3 +1,6 @@
+import 'package:flash/presentation/widgets/error_message_widget.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash/constants.dart';
 import 'package:flash/presentation/widgets/currency_search_widget.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
@@ -24,25 +27,19 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final List<String> currencyList = [];
   final List<String> filteredCurrencyList = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+  String url = "$baseUrl$baseCurrency";
+  // لتخزين حالة الـ "favorite" لكل عملة
+  Map<String, bool> favoriteCurrencies = {};
 
   final CurrenciesWebService _currenciesWebService =
       CurrenciesWebService(dio: Dio());
   final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
 
-  int _currentIndex = 0; // حفظ حالة العنصر المحدد في الشريط السفلي
-
-  // دالة لتقريب الأرقام إلى 7 أرقام بعد الفاصلة العشرية
-double roundTo7Digits(dynamic value) {
-  // التأكد من أن القيمة من النوع double
-  if (value is int) {
-    value = value.toDouble(); // تحويل int إلى double إذا كانت القيمة int
-  }
-  return double.parse(value.toStringAsFixed(7)); // التأكد من تحويلها إلى 7 أرقام بعد الفاصلة العشرية
-}
+  int _currentIndex = 0;
 
   Future<void> fetchRates() async {
     try {
-      final fetchedRates = await _currenciesWebService.fetchRates(baseUrl);
+      final fetchedRates = await _currenciesWebService.fetchRates(url);
       setState(() {
         rates = fetchedRates;
         isLoading = false;
@@ -115,33 +112,14 @@ double roundTo7Digits(dynamic value) {
                 searchTextController: _searchTextController,
                 addSearchedForCurrencyToSearchedList:
                     addSearchedForCurrencyToSearchedList,
-                onBackPressed: _stopSearching, // تم إصلاح الدالة هنا
+                onBackPressed: _stopSearching,
               ),
             )
           : CustomAppBar(onSearchPressed: _startSearch),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
-              ? Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        errorMessage,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Icon(
-                        Icons.error,
-                        color: Colors.red,
-                        size: 36.sp,
-                      ),
-                    ],
-                  ),
-                )
+              ?ErrorMessageWidget(errorMessage: errorMessage)
               : Column(
                   children: [
                     Expanded(
@@ -156,9 +134,10 @@ double roundTo7Digits(dynamic value) {
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  baseCurrency = currency; // تعيين العملة
+                                  baseCurrency = currency;
+                                  url = "$baseUrl$baseCurrency";
                                 });
-                                // يمكنك إضافة أي إجراء إضافي هنا مثل التنقل إلى شاشة أخرى
+                                fetchRates();
                               },
                               child: SlideTransition(
                                 position: animation.drive(Tween<Offset>(
@@ -180,7 +159,7 @@ double roundTo7Digits(dynamic value) {
                                   ),
                                   child: Center(
                                     child: ListTile(
-                                      leading: FutureBuilder<String?>( 
+                                      leading: FutureBuilder<String?>(
                                         future: _currencyFlag
                                             .fetchFlagByCurrency(currency),
                                         builder: (context, snapshot) {
@@ -190,10 +169,27 @@ double roundTo7Digits(dynamic value) {
                                           } else if (snapshot.hasError) {
                                             return const Icon(Icons.error);
                                           } else if (snapshot.hasData) {
-                                            return CircleAvatar(
-                                              radius: 32,
-                                              backgroundImage:
-                                                  NetworkImage(snapshot.data!),
+                                            return CachedNetworkImage(
+                                              imageUrl: snapshot.data!,
+                                              cacheManager: CacheManager(
+                                                Config(
+                                                  'customCacheKey', // يمكن استخدام أي اسم مميز للكاش
+                                                  stalePeriod: const Duration(
+                                                      days: 30), // مدة الكاش
+                                                  maxNrOfCacheObjects: 180,
+                                                ),
+                                              ),
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      CircleAvatar(
+                                                radius: 28.h,
+                                                backgroundImage: imageProvider,
+                                              ),
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
                                             );
                                           } else {
                                             return const Icon(Icons.flag);
@@ -201,24 +197,46 @@ double roundTo7Digits(dynamic value) {
                                         },
                                       ),
                                       title: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
                                         children: [
+                                          // نص العملة
                                           Text(
                                             currency,
                                             style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 24.sp,
+                                              fontSize: 20.sp,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
+                                          // Spacer لدفع أيقونة الـ Favorite إلى أقصى اليمين
+                                          Spacer(),
+                                          // نص السعر
                                           Text(
-                                            roundTo7Digits(rate).toString(),
+                                            rate.toString(),
                                             style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 24.sp,
+                                              fontSize: 20.sp,
                                               fontWeight: FontWeight.bold,
                                             ),
+                                          ),
+                                          // أيقونة الـ Favorite
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.favorite,
+                                              size: 22.w,
+                                              color: favoriteCurrencies[
+                                                          currency] ??
+                                                      false
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                favoriteCurrencies[currency] =
+                                                    !(favoriteCurrencies[
+                                                            currency] ??
+                                                        false);
+                                              });
+                                            },
                                           ),
                                         ],
                                       ),
@@ -233,10 +251,10 @@ double roundTo7Digits(dynamic value) {
                       ),
                     ),
                     CustomBottomNavigationBar(
-                      currentIndex: _currentIndex, // تم تمرير currentIndex هنا
+                      currentIndex: _currentIndex,
                       onTap: (index) {
                         setState(() {
-                          _currentIndex = index; // تحديث قيمة currentIndex
+                          _currentIndex = index;
                         });
                       },
                     ),

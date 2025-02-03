@@ -2,33 +2,35 @@ import 'package:dio/dio.dart';
 
 class CurrencyFlag {
   final Dio dio;
+  Map<String, String?> _cachedFlags = {}; // كاش الصور
 
   CurrencyFlag({required this.dio});
 
-  // جلب رابط علم الدولة بناءً على العملة
   Future<String?> fetchFlagByCurrency(String currencyCode) async {
-    try {
-      // إذا كانت العملة هي USD، نرجع رابط علم الولايات المتحدة مباشرة
-      if (currencyCode == 'USD') {
-        return 'https://flagcdn.com/w320/us.png'; // رابط علم الولايات المتحدة
-      }
+    // التحقق إذا كانت الصورة موجودة في الكاش بالفعل
+    if (_cachedFlags.containsKey(currencyCode)) {
+      return _cachedFlags[currencyCode]; // إرجاع الرابط من الكاش
+    }
 
-      // إذا كانت العملة هي EUR (اليورو)، نرجع رابط علم الاتحاد الأوروبي
+    try {
+      // إذا كانت العملة هي USD أو EUR، نرجع الرابط مباشرة
+      if (currencyCode == 'USD') {
+        return 'https://flagcdn.com/w320/us.png';
+      }
       if (currencyCode == 'EUR') {
-        return 'https://flagcdn.com/w320/eu.png'; // رابط علم الاتحاد الأوروبي
+        return 'https://flagcdn.com/w320/eu.png';
       }
 
       // طلب البيانات من API الدول
       final response = await dio.get('https://restcountries.com/v3.1/all');
       if (response.statusCode == 200) {
-        // تحليل البيانات
         final List<dynamic> countries = response.data;
 
-        // البحث عن الدولة التي تحتوي على العملة المطلوبة
         for (var country in countries) {
           if (country['currencies'] != null && country['currencies'][currencyCode] != null) {
-            // جلب رابط صورة العلم
-            return country['flags']['png'];
+            String flagUrl = country['flags']['png'];
+            _cachedFlags[currencyCode] = flagUrl; // حفظ الرابط في الكاش
+            return flagUrl;
           }
         }
         throw Exception('Currency not found in any country');

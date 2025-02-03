@@ -17,23 +17,31 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      items:  [
+      type: BottomNavigationBarType.fixed, // تأكد من هذا السطر
+      backgroundColor: Color(kPrimaryColor), // خلفية الشريط
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite,size: 22.w),
+          icon: Icon(Icons.favorite, size: 22.w),
           label: 'favorite',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.currency_bitcoin,size: 22.w),
+          icon: ImageIcon(
+            AssetImage("assets/images/img.icons8.png"),
+            size: 22.w,
+          ),
+          label: 'metals',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.currency_bitcoin, size: 22.w),
           label: 'crypto',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.attach_money,size: 22.w),
+          icon: Icon(Icons.attach_money, size: 22.w),
           label: 'currency',
         ),
       ],
-      selectedItemColor: Colors.white, // اللون المختار للأيقونة
-      unselectedItemColor: Colors.grey, // اللون للأيقونات غير المحددة
-      backgroundColor: Color(kPrimaryColor), // خلفية الشريط
     );
   }
 }
