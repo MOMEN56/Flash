@@ -16,7 +16,7 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
   Future<void> fetchCurrencies() async {
     try {
       emit(CurrenciesLoading());
-      final url = "$baseUrl$baseCurrency";
+      final url = "$baseCurrencyUrl$baseCurrency";
       final rates = await currenciesService.fetchRates(url);  // جلب البيانات باستخدام CurrenciesService مع baseCurrency المحددة
 
       // تحويل البيانات إلى نماذج CurrencyModel

@@ -30,7 +30,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   final ScrollController _scrollController =
       ScrollController(); // إضافة ScrollController
-  String url = "$baseUrl$comparisonCurrency";
+  String url = "$baseCurrencyUrl$comparisonCurrency";
   Map<String, bool> favoriteCurrencies = {};
 
   final CurrenciesWebService _currenciesWebService =
@@ -112,7 +112,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     setState(() {
       _isSearching = false; // عند الضغط نجعل _isSearching = false
       comparisonCurrency = currency; // تعيين العملة للمقارنة
-      url = "$baseUrl$comparisonCurrency";
+      url = "$baseCurrencyUrl$comparisonCurrency";
 
       // إعادة ترتيب القائمة: إزالة العملة ثم إدراجها في البداية
       filteredCurrencyList.remove(currency);
