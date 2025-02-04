@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flash/constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
+import 'package:flutter/material.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -16,30 +16,54 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: currentIndex,
-      onTap: onTap,
-      type: BottomNavigationBarType.fixed, // تأكد من هذا السطر
-      backgroundColor: Color(kPrimaryColor), // خلفية الشريط
+      onTap: (index) {
+        // استخدام PageRouteBuilder فقط عند الضغط على "crypto"
+        if (index == 1) {
+          // الانتقال إلى شاشة CryptoRatesScreen باستخدام PageRouteBuilder
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => CryptoRatesScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                // تخصيص الحركة بين الشاشات باستخدام SlideTransition
+                const begin = Offset(1.0, 0.0); // الانتقال من الجهة اليمنى
+                const end = Offset.zero;
+                const curve = Curves.easeInOut;
+
+                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(position: offsetAnimation, child: child); // حركة انزلاقية
+              },
+            ),
+          );
+        } else {
+          onTap(index); // إذا كان العنصر ليس "crypto"، ننفذ الدالة الأصلية
+        }
+      },
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Color(kPrimaryColor), // العودة للون الذي كان مستخدمًا
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.grey,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite, size: 22.w),
-          label: 'favorite',
+          icon: Icon(Icons.attach_money, size: 22),
+          label: 'currency',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.currency_bitcoin, size: 22),
+          label: 'crypto',
         ),
         BottomNavigationBarItem(
           icon: ImageIcon(
             AssetImage("assets/images/img.icons8.png"),
-            size: 22.w,
+            size: 22,
           ),
           label: 'metals',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.currency_bitcoin, size: 22.w),
-          label: 'crypto',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.attach_money, size: 22.w),
-          label: 'currency',
+          icon: Icon(Icons.favorite, size: 22),
+          label: 'favorite',
         ),
       ],
     );

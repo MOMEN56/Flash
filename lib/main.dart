@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flash/business_logic/cubit/currencies_cubit.dart';
 import 'package:flash/constants.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
 import 'package:flash/presentation/screens/home_screen.dart';
 import 'package:flash/presentation/screens/no_connection_screen.dart';
 import 'package:flash/presentation/screens/splash_screen.dart';
@@ -30,7 +31,7 @@ class Flash extends StatelessWidget {
               scaffoldBackgroundColor: const Color(kPrimaryColor),
             ),
             onGenerateRoute: AppRouter().generateRoute, // ربط التوجيه مع AppRouter
-            home: HomeScreen(),
+            home: CryptoRatesScreen(),
             debugShowCheckedModeBanner: false,
           ),
         );

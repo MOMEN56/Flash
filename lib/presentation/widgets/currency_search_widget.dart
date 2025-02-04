@@ -6,7 +6,6 @@ class CurrencySearchWidget extends StatelessWidget {
   final TextEditingController searchTextController;
   final Function(String) addSearchedForCurrencyToSearchedList;
   final VoidCallback onBackPressed;
-
   const CurrencySearchWidget({
     super.key,
     required this.searchTextController,

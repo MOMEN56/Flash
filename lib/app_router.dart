@@ -1,3 +1,4 @@
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
 import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 import 'package:flash/presentation/screens/no_connection_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => NoConnectionScreen()); // استبدل بـ HomeScreen الفعلي
       case '/CurrenciesRatesScreen': // اسم الشاشة الثانية هو HomeScreen
         return MaterialPageRoute(builder: (_) => CurrenciesRatesScreen()); // استبدل بـ HomeScreen الفعلي
+      case '/CryptoRatesScreen': // اسم الشاشة الثانية هو HomeScreen
+        return MaterialPageRoute(builder: (_) => CryptoRatesScreen()); // استبدل بـ HomeScreen الفعلي
       default:
         return null;
     }
