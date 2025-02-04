@@ -23,7 +23,6 @@ class CryptoModel {
   final double atl;
   final double atlChangePercentage;
   final String atlDate;
-  final dynamic roi;
   final String lastUpdated;
 
   CryptoModel({
@@ -51,7 +50,6 @@ class CryptoModel {
     required this.atl,
     required this.atlChangePercentage,
     required this.atlDate,
-    this.roi,
     required this.lastUpdated,
   });
 
@@ -81,7 +79,7 @@ class CryptoModel {
       atl: json['atl'].toDouble(),
       atlChangePercentage: json['atl_change_percentage'].toDouble(),
       atlDate: json['atl_date'],
-      roi: json['roi'],
+
       lastUpdated: json['last_updated'],
     );
   }
@@ -112,7 +110,6 @@ class CryptoModel {
       'atl': atl,
       'atl_change_percentage': atlChangePercentage,
       'atl_date': atlDate,
-      'roi': roi,
       'last_updated': lastUpdated,
     };
   }

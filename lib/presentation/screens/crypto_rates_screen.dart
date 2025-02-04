@@ -6,6 +6,7 @@ import 'package:flash/data/web_services/crypto_web_service.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'crypto_info_screen.dart';
 
 class CryptoRatesScreen extends StatefulWidget {
   const CryptoRatesScreen({super.key});
@@ -109,7 +110,16 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                       var crypto = cryptos.firstWhere(
                           (c) => c.name == filteredCryptoList[index]);
                       return GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CryptoInfoScreen(
+                                crypto: crypto,
+                              ),
+                            ),
+                          );
+                        },
                         child: Container(
                           height: 72.5.h,
                           margin: EdgeInsets.symmetric(
