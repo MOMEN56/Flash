@@ -28,16 +28,14 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final List<String> currencyList = [];
   final List<String> filteredCurrencyList = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
-  final ScrollController _scrollController =
-      ScrollController(); // إضافة ScrollController
+  final ScrollController _scrollController = ScrollController();
   String url = "$baseCurrencyUrl$comparisonCurrency";
   Map<String, bool> favoriteCurrencies = {};
-
-  final CurrenciesWebService _currenciesWebService =
-      CurrenciesWebService(dio: Dio());
+  final CurrenciesWebService _currenciesWebService = CurrenciesWebService(dio: Dio());
   final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
+  // CacheManager instance for caching the flags
+  final CacheManager _cacheManager = CacheManager(Config('customCacheKey', stalePeriod: Duration(days: 30), maxNrOfCacheObjects: 180));
 
-  int _currentIndex = 0;
   Future<void> fetchRates() async {
     try {
       final fetchedRates = await _currenciesWebService.fetchRates(url);
@@ -101,25 +99,19 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     });
   }
 
-  // دالة عند الضغط على عملة: تنفذ اهتزازًا، تُعيد ترتيب القائمة وتُحدث العملة للمقارنة،
-  // بالإضافة إلى ضبط _isSearching لتصبح false.
   Future<void> _onCurrencyTap(String currency) async {
-    // اهتزاز الهاتف
     if (await Vibration.hasVibrator() ?? false) {
       Vibration.vibrate(duration: 100);
     }
 
     setState(() {
-      _isSearching = false; // عند الضغط نجعل _isSearching = false
-      comparisonCurrency = currency; // تعيين العملة للمقارنة
+      _isSearching = false;
+      comparisonCurrency = currency;
       url = "$baseCurrencyUrl$comparisonCurrency";
-
-      // إعادة ترتيب القائمة: إزالة العملة ثم إدراجها في البداية
       filteredCurrencyList.remove(currency);
       filteredCurrencyList.insert(0, currency);
     });
 
-    // تمرير الصفحة إلى الأعلى (Animated)
     _scrollController.animateTo(
       0,
       duration: Duration(milliseconds: 300),
@@ -158,6 +150,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                           if (index < filteredCurrencyList.length) {
                             final currency = filteredCurrencyList[index];
                             final rate = rates![currency];
+
+                            // Preload the image for caching
+                            precacheImage(NetworkImage(
+                                'https://www.example.com/${currency}.png'),
+                                context);
+
                             return GestureDetector(
                               onTap: () => _onCurrencyTap(currency),
                               child: SlideTransition(
@@ -182,7 +180,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                   ),
                                   child: Center(
                                     child: ListTile(
-                                      contentPadding: EdgeInsets.only(left: 4.h),
+                                      contentPadding: EdgeInsets.only(left: 8.h),
                                       leading: FutureBuilder<String?>(
                                         future: _currencyFlag
                                             .fetchFlagByCurrency(currency),
@@ -195,14 +193,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                           } else if (snapshot.hasData) {
                                             return CachedNetworkImage(
                                               imageUrl: snapshot.data!,
-                                              cacheManager: CacheManager(
-                                                Config(
-                                                  'customCacheKey',
-                                                  stalePeriod:
-                                                      const Duration(days: 30),
-                                                  maxNrOfCacheObjects: 180,
-                                                ),
-                                              ),
+                                              cacheManager: _cacheManager,
                                               imageBuilder:
                                                   (context, imageProvider) =>
                                                       CircleAvatar(
@@ -274,7 +265,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            // في حالة العملة المقارنة نعرض أيقونة المفضلة فقط
                                             IconButton(
                                               icon: Icon(
                                                 Icons.favorite,
@@ -307,14 +297,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                           return SizedBox.shrink();
                         },
                       ),
-                    ),
-                    CustomBottomNavigationBar(
-                      currentIndex: _currentIndex,
-                      onTap: (index) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
-                      },
                     ),
                   ],
                 ),

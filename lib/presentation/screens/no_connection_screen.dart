@@ -8,7 +8,6 @@ class NoConnectionScreen extends StatefulWidget {
 }
 
 class _NoConnectionScreenState extends State<NoConnectionScreen> {
-  int _currentIndex = 0; // حفظ حالة العنصر المحدد في الشريط السفلي
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +25,6 @@ class _NoConnectionScreenState extends State<NoConnectionScreen> {
             // الصورة التي توضح عدم الاتصال
           ],
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex, // تم تمرير currentIndex هنا
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index; // تحديث قيمة currentIndex
-          });
-        },
       ),
     );
   }

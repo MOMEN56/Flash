@@ -6,6 +6,7 @@ import 'package:flash/data/web_services/crypto_web_service.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CryptoRatesScreen extends StatefulWidget {
   const CryptoRatesScreen({super.key});
@@ -15,13 +16,14 @@ class CryptoRatesScreen extends StatefulWidget {
 }
 
 class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 1; // القيمة الافتراضية 1 لأننا في شاشة CryptoRates
   bool _isSearching = false;
   String errorMessage = '';
   final _searchTextController = TextEditingController();
   final List<String> cryptoList = [];
   final List<String> filteredCryptoList = [];
   final CryptoWebService cryptoWebService = CryptoWebService(baseCyrptoUrl);
+  Map<String, bool> favoriteCryptos = {};
 
   Future<void> fetchCryptos() async {
     try {
@@ -47,7 +49,8 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
       } else {
         filteredCryptoList.clear();
         filteredCryptoList.addAll(cryptoList
-            .where((crypto) => crypto.toLowerCase().startsWith(searchedCrypto.toLowerCase()))
+            .where((crypto) =>
+                crypto.toLowerCase().startsWith(searchedCrypto.toLowerCase()))
             .toList());
       }
       errorMessage = filteredCryptoList.isEmpty ? 'No crypto found' : '';
@@ -82,13 +85,14 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
               preferredSize: Size.fromHeight(kToolbarHeight),
               child: CurrencySearchWidget(
                 searchTextController: _searchTextController,
-                addSearchedForCurrencyToSearchedList: addSearchedForCryptoToSearchedList,
+                addSearchedForCurrencyToSearchedList:
+                    addSearchedForCryptoToSearchedList,
                 onBackPressed: _stopSearching,
               ),
             )
           : CustomAppBar(onSearchPressed: _startSearch),
       body: errorMessage.isNotEmpty
-          ? ErrorMessageWidget(errorMessage: errorMessage) // هنا قمنا بإضافة ErrorMessageWidget
+          ? ErrorMessageWidget(errorMessage: errorMessage)
           : FutureBuilder<List<CryptoModel>>(
               future: cryptoWebService.fetchCryptos(),
               builder: (context, snapshot) {
@@ -104,25 +108,92 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                   return ListView.builder(
                     itemCount: filteredCryptoList.length,
                     itemBuilder: (context, index) {
-                      var crypto = cryptos.firstWhere((c) => c.name == filteredCryptoList[index]);
-                      return ListTile(
-                        title: Text(crypto.name),
-                        subtitle: Text('Price: \$${crypto.currentPrice.toString()}'),
-                        leading: Image.network(crypto.image),
+                      var crypto = cryptos.firstWhere(
+                          (c) => c.name == filteredCryptoList[index]);
+                      return GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          height: 72.5.h,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 8.h, horizontal: 12.w),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF5d6d7e),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                child: Row(
+                                  children: [
+                                    ClipOval(
+                                      child: Image.network(
+                                        crypto.image,
+                                        width: 40.h,
+                                        height: 40.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Text(
+                                      crypto.name,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '${crypto.currentPrice.toString()}\$',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.favorite,
+                                        size: 18.w,
+                                        color: favoriteCryptos[crypto.name] ??
+                                                false
+                                            ? Colors.red
+                                            : Colors.grey,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          favoriteCryptos[crypto.name] =
+                                              !(favoriteCryptos[crypto.name] ??
+                                                  false);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   );
                 }
               },
             ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
     );
   }
 }

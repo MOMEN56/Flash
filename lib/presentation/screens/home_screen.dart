@@ -1,44 +1,65 @@
-import 'package:flash/presentation/screens/no_connection_screen.dart';  // استيراد شاشة عدم الاتصال
-import 'package:flash/presentation/screens/currencies_rates_screen.dart';  // استيراد شاشة أسعار العملات
+import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';  // استيراد مكتبة الاتصال بالإنترنت
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flash/constants.dart';
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
+import 'package:flash/presentation/screens/no_connection_screen.dart';
+import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isConnected = true; // حالة الاتصال بالإنترنت
+  int _currentIndex = 0;
+  bool isConnected = true;
+
+  final List<Widget> _screens = [
+    const CurrenciesRatesScreen(),
+    const CryptoRatesScreen(),
+    // لن نضيف شاشات المعدن والمفضلة حالياً
+  ];
 
   @override
   void initState() {
     super.initState();
     _checkConnection();
-    // إضافة مستمع لحالة الاتصال عند التغيير
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
-      _updateConnectionStatus(results);  // التعامل مع النتيجة كـ List<ConnectivityResult>
+    Connectivity().onConnectivityChanged.listen((event) {
+      setState(() {
+        isConnected = event != ConnectivityResult.none;
+      });
     });
   }
 
-  // التحقق من الاتصال بالإنترنت
   Future<void> _checkConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
-    _updateConnectionStatus(connectivityResult);
-  }
-
-  // تحديث حالة الاتصال بناءً على النتيجة
-  void _updateConnectionStatus(List<ConnectivityResult> results) {
     setState(() {
-      isConnected = results.any((result) => result != ConnectivityResult.none);
+      isConnected = connectivityResult != ConnectivityResult.none;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // إذا كان هناك اتصال بالإنترنت نعرض شاشة أسعار العملات، وإذا لا نعرض شاشة عدم الاتصال
-    return isConnected ? const CurrenciesRatesScreen() : NoConnectionScreen();
+    return Scaffold(
+      body: isConnected
+          ? IndexedStack(
+              index: _currentIndex,
+              children: _screens,
+            )
+          :  NoConnectionScreen(),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index != 2 && index != 3) {  // منع تغيير الشاشة عند الضغط على "المعادن" أو "المفضلة"
+            setState(() {
+              _currentIndex = index;
+            });
+          }
+        },
+      ),
+    );
   }
 }
