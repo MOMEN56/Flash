@@ -11,7 +11,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.onSearchPressed,
     this.showSearchIcon = true,
-    this.titlePaddingLeft = 100.0,  // تعيين قيمة افتراضية 70
+    this.titlePaddingLeft = 80.0,  // تعيين قيمة افتراضية 70
   }) : preferredSize = Size.fromHeight(kToolbarHeight);
 
   @override
