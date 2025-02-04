@@ -144,7 +144,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                                       crypto.name,
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 16.sp,
+                                        fontSize: crypto.name.length > 10 ? 10.sp : 16.sp,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -159,7 +159,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                                       '${crypto.currentPrice.toString()}\$',
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 16.sp,
+                                        fontSize: crypto.currentPrice.toString().length > 7 ? 14.sp : 16.sp,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

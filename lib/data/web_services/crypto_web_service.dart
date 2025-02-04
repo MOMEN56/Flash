@@ -36,9 +36,6 @@ class CryptoWebService {
           List<dynamic> data = response.data;
 
           // تصفية "Lido Staked Ether" من البيانات
-          data.removeWhere(
-              (cryptoJson) => cryptoJson['name'] == 'Lido Staked Ether');
-
           // حفظ البيانات في الكاش
           cacheManager.putFile(baseCryptoUrl, utf8.encode(json.encode(data)));
 
