@@ -28,7 +28,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final List<String> currencyList = [];
   final List<String> filteredCurrencyList = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
-  final ScrollController _scrollController = ScrollController();  // إضافة ScrollController
+  final ScrollController _scrollController =
+      ScrollController(); // إضافة ScrollController
   String url = "$baseUrl$comparisonCurrency";
   Map<String, bool> favoriteCurrencies = {};
 
@@ -70,12 +71,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
       } else {
         filteredCurrencyList.clear();
         filteredCurrencyList.addAll(currencyList
-            .where((currency) =>
-                currency.toLowerCase().startsWith(searchedCurrency.toLowerCase()))
+            .where((currency) => currency
+                .toLowerCase()
+                .startsWith(searchedCurrency.toLowerCase()))
             .toList());
       }
-      errorMessage =
-          filteredCurrencyList.isEmpty ? 'No currencies found' : '';
+      errorMessage = filteredCurrencyList.isEmpty ? 'No currencies found' : '';
       _insertItems();
     });
   }
@@ -181,7 +182,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                   ),
                                   child: Center(
                                     child: ListTile(
-                                      contentPadding: EdgeInsets.zero,
+                                      contentPadding: EdgeInsets.only(left: 4.h),
                                       leading: FutureBuilder<String?>(
                                         future: _currencyFlag
                                             .fetchFlagByCurrency(currency),
@@ -230,7 +231,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          if (currency != comparisonCurrency) ...[
+                                          if (currency !=
+                                              comparisonCurrency) ...[
                                             Spacer(flex: 10),
                                             Text(
                                               rate.toString(),
@@ -244,7 +246,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               icon: Icon(
                                                 Icons.favorite,
                                                 size: 20.w,
-                                                color: favoriteCurrencies[currency] ??
+                                                color: favoriteCurrencies[
+                                                            currency] ??
                                                         false
                                                     ? Colors.red
                                                     : Colors.grey,
@@ -252,7 +255,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                   favoriteCurrencies[currency] =
-                                                      !(favoriteCurrencies[currency] ??
+                                                      !(favoriteCurrencies[
+                                                              currency] ??
                                                           false);
                                                 });
                                               },
@@ -275,7 +279,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               icon: Icon(
                                                 Icons.favorite,
                                                 size: 20.w,
-                                                color: favoriteCurrencies[currency] ??
+                                                color: favoriteCurrencies[
+                                                            currency] ??
                                                         false
                                                     ? Colors.red
                                                     : Colors.grey,
@@ -283,7 +288,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                   favoriteCurrencies[currency] =
-                                                      !(favoriteCurrencies[currency] ??
+                                                      !(favoriteCurrencies[
+                                                              currency] ??
                                                           false);
                                                 });
                                               },

@@ -1,3 +1,4 @@
+import 'package:flash/constants.dart';
 import 'package:flash/data/models/currency_model.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,8 +16,8 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
   Future<void> fetchCurrencies() async {
     try {
       emit(CurrenciesLoading());
-      final baseUrl = "https://v6.exchangerate-api.com/v6/cece996ffe0a030451cb4f5a/latest/$baseCurrency";
-      final rates = await currenciesService.fetchRates(baseUrl);  // جلب البيانات باستخدام CurrenciesService مع baseCurrency المحددة
+      final url = "$baseUrl$baseCurrency";
+      final rates = await currenciesService.fetchRates(url);  // جلب البيانات باستخدام CurrenciesService مع baseCurrency المحددة
 
       // تحويل البيانات إلى نماذج CurrencyModel
       final currenciesModel = rates.keys.map((currency) {
