@@ -1,11 +1,12 @@
-import 'package:flash/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flash/constants.dart';  // Ensure the constants file is imported
 
 class CurrencySearchWidget extends StatelessWidget {
   final TextEditingController searchTextController;
   final Function(String) addSearchedForCurrencyToSearchedList;
   final VoidCallback onBackPressed;
+
   const CurrencySearchWidget({
     super.key,
     required this.searchTextController,
@@ -16,7 +17,7 @@ class CurrencySearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(kPrimaryColor), // يمكنك تغيير اللون هنا
+      backgroundColor: Color(kPrimaryColor),  // Customize your primary color
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
         onPressed: onBackPressed,
@@ -25,14 +26,14 @@ class CurrencySearchWidget extends StatelessWidget {
         controller: searchTextController,
         onChanged: addSearchedForCurrencyToSearchedList,
         style: TextStyle(
-          color: Colors.white, // اللون الأبيض للنص
-          fontSize: 18.sp, // حجم الخط للنص المكتوب
+          color: Colors.white,
+          fontSize: 18.sp,
         ),
         decoration: InputDecoration(
           hintText: "Search currencies",
           hintStyle: TextStyle(
-            color: Colors.white, // تغيير اللون إلى الأبيض
-            fontSize: 18.sp, // تغيير حجم الخط
+            color: Colors.white,
+            fontSize: 18.sp,
           ),
           border: InputBorder.none,
         ),
