@@ -6,6 +6,7 @@ import 'package:flash/data/web_services/crypto_web_service.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vibration/vibration.dart';
 import 'crypto_info_screen.dart';
 
 class CryptoRatesScreen extends StatefulWidget {
@@ -76,7 +77,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
     });
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _isSearching
@@ -110,7 +111,12 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                       var crypto = cryptos.firstWhere(
                           (c) => c.name == filteredCryptoList[index]);
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          // إضافة الاهتزاز هنا
+                          if (await Vibration.hasVibrator() ?? false) {
+                            Vibration.vibrate(duration: 100); // الاهتزاز لمدة 100 ملي ثانية
+                          }
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
