@@ -1,7 +1,6 @@
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flash/constants.dart';
 import 'package:flash/presentation/screens/crypto_rates_screen.dart';
 import 'package:flash/presentation/screens/no_connection_screen.dart';
 import 'package:flash/presentation/screens/currencies_rates_screen.dart';
@@ -20,24 +19,32 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const CurrenciesRatesScreen(),
     const CryptoRatesScreen(),
-    // لن نضيف شاشات المعدن والمفضلة حالياً
   ];
 
   @override
   void initState() {
     super.initState();
-    _checkConnection();
-    Connectivity().onConnectivityChanged.listen((event) {
-      setState(() {
-        isConnected = event != ConnectivityResult.none;
-      });
+    _checkInitialConnection();
+    // Listen for connectivity changes
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> resultList) {
+      _updateConnectionStatus(resultList);
     });
   }
 
-  Future<void> _checkConnection() async {
-    final connectivityResult = await Connectivity().checkConnectivity();
+  Future<void> _checkInitialConnection() async {
+    final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+  }
+
+  void _updateConnectionStatus(List<ConnectivityResult> resultList) {
     setState(() {
-      isConnected = connectivityResult != ConnectivityResult.none;
+      // Check if there's any non-ConnectivityResult.none
+      isConnected = resultList.isNotEmpty && resultList.first != ConnectivityResult.none;
+      if (!isConnected) {
+        _currentIndex = -1; // Set to the "No Connection" screen
+      } else if (_currentIndex == -1) {
+        _currentIndex = 0; // Switch back to the default screen when connection is restored
+      }
     });
   }
 
@@ -49,17 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
               index: _currentIndex,
               children: _screens,
             )
-          :  NoConnectionScreen(),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index != 2 && index != 3) {  // منع تغيير الشاشة عند الضغط على "المعادن" أو "المفضلة"
-            setState(() {
-              _currentIndex = index;
-            });
-          }
-        },
-      ),
+          :  NoConnectionScreen(), // Show the "No Connection" screen
+      bottomNavigationBar: isConnected
+          ? CustomBottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+            )
+          : null, // Don't show the bottom navigation if not connected
     );
   }
 }

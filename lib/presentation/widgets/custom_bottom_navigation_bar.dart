@@ -1,6 +1,4 @@
 import 'package:flash/constants.dart';
-import 'package:flash/presentation/screens/crypto_rates_screen.dart';
-import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {

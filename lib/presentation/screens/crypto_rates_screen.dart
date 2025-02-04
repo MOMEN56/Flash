@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flash/data/web_services/crypto_web_service.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CryptoRatesScreen extends StatefulWidget {
@@ -16,7 +15,6 @@ class CryptoRatesScreen extends StatefulWidget {
 }
 
 class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
-  int _currentIndex = 1; // القيمة الافتراضية 1 لأننا في شاشة CryptoRates
   bool _isSearching = false;
   String errorMessage = '';
   final _searchTextController = TextEditingController();
