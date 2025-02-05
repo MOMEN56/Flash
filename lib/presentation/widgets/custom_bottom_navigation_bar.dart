@@ -1,4 +1,6 @@
 import 'package:flash/constants.dart';
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
+import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -15,7 +17,40 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: currentIndex,
-      onTap: onTap,
+      onTap: (index) {
+        if (index != currentIndex) {
+          switch (index) {
+            case 0:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => CurrenciesRatesScreen()),
+                (route) => false, // لحذف الشاشات السابقة
+              );
+              break;
+            case 1:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => CryptoRatesScreen()),
+                (route) => false, // لحذف الشاشات السابقة
+              );
+              break;
+            case 2:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => CurrenciesRatesScreen()),
+                (route) => false, // لحذف الشاشات السابقة
+              );
+              break;
+            case 3:
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => CurrenciesRatesScreen()),
+                (route) => false, // لحذف الشاشات السابقة
+              );
+              break;
+          }
+        }
+      },
       type: BottomNavigationBarType.fixed,
       backgroundColor: Color(kPrimaryColor),
       selectedItemColor: Colors.white,
@@ -33,15 +68,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
           label: 'crypto',
         ),
         BottomNavigationBarItem(
-          icon: ImageIcon(
-            AssetImage("assets/images/img.icons8.png"),
-            size: 20,
-          ),
-          label: 'metals', // ستكون غير مفعلة حالياً
+          icon: Icon(Icons.widgets, size: 20),
+          label: 'metals',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.favorite, size: 20),
-          label: 'favorite', // ستكون غير مفعلة حالياً
+          label: 'favorite',
         ),
       ],
     );

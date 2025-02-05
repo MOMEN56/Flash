@@ -1,4 +1,3 @@
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flash/presentation/screens/crypto_rates_screen.dart';
@@ -57,16 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
               children: _screens,
             )
           :  NoConnectionScreen(), // Show the "No Connection" screen
-      bottomNavigationBar: isConnected
-          ? CustomBottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-            )
-          : null, // Don't show the bottom navigation if not connected
     );
   }
 }

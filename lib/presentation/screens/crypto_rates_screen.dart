@@ -1,5 +1,6 @@
 import 'package:flash/constants.dart';
 import 'package:flash/presentation/widgets/currency_search_widget.dart';
+import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flash/presentation/widgets/error_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/data/web_services/crypto_web_service.dart';
@@ -90,7 +91,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                 onBackPressed: _stopSearching,
               ),
             )
-          : CustomAppBar(onSearchPressed: _startSearch),
+          : CustomAppBar(onSearchPressed: _startSearch,showBackButton: false,),
       body: errorMessage.isNotEmpty
           ? ErrorMessageWidget(errorMessage: errorMessage)
           : FutureBuilder<List<CryptoModel>>(
@@ -208,6 +209,12 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                 }
               },
             ),
+             bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 1, // هنا تحدد index بناءً على الشاشة الحالية
+        onTap: (index) {
+          // هذا هو المكان المناسب لتحديد السلوك عند الضغط على أزرار البار
+        },
+      ),
     );
   }
 }

@@ -14,7 +14,8 @@ class CryptoInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 28.h),
-      body: SingleChildScrollView( // Wrap the content with SingleChildScrollView to enable scrolling
+      body: SingleChildScrollView(
+        // Wrap the content with SingleChildScrollView to enable scrolling
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -34,48 +35,67 @@ class CryptoInfoScreen extends StatelessWidget {
               ),
 
               // Add CryptoModel details below
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Name', value: crypto.name),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Symbol', value: crypto.symbol),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Current Price', value: '${crypto.currentPrice.toStringAsFixed(2)} \$'),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Market Cap', value: '${crypto.marketCap.toStringAsFixed(2)} \$'),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Market Cap Rank', value: crypto.marketCapRank.toString()),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Total Volume', value: '${crypto.totalVolume.toStringAsFixed(2)} \$'),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Highest Price In The Last 24 Hours', 
+                  label: 'Name', value: crypto.name),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Symbol', value: crypto.symbol),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Current Price',
+                  value: '${crypto.currentPrice.toStringAsFixed(2)} \$'),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Market Cap',
+                  value: '${crypto.marketCap.toStringAsFixed(2)} \$'),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Market Cap Rank',
+                  value: crypto.marketCapRank.toString()),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Total Volume',
+                  value: '${crypto.totalVolume.toStringAsFixed(2)} \$'),
+              TextInfoTextInCryptoInfoScreenWidget(
+                label: 'Highest Price In The Last 24 Hours',
                 value: '${crypto.high24h.toStringAsFixed(2)} \$',
                 fontSize: 9.sp, // Set smaller font size
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Lowest Price In The Last 24 Hours', 
+                label: 'Lowest Price In The Last 24 Hours',
                 value: '${crypto.low24h.toStringAsFixed(2)} \$',
                 fontSize: 9.sp, // Set smaller font size
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Price Change In The Last 24 Hour', 
+                label: 'Price Change In The Last 24 Hour',
                 value: '${crypto.priceChange24h.toStringAsFixed(2)} \$',
                 fontSize: 9.sp, // Set smaller font size
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Price Change Percentage In The Last 24 Hour', 
-                value: '${crypto.priceChangePercentage24h.toStringAsFixed(2)} %',
+                label: 'Price Change Percentage In The Last 24 Hour',
+                value:
+                    '${crypto.priceChangePercentage24h.toStringAsFixed(2)} %',
                 fontSize: 9.sp, // Set smaller font size
               ),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Circulating Supply', value: '${crypto.circulatingSupply.toStringAsFixed(2)}'),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Total Supply', value: '${crypto.totalSupply.toStringAsFixed(2)}'),
-              if (crypto.maxSupply != null) 
-                TextInfoTextInCryptoInfoScreenWidget(label: 'Max Supply', value: '${crypto.maxSupply!.toStringAsFixed(2)}'),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Highest Price Overall', value: '${crypto.ath.toStringAsFixed(2)} \$'),
-              TextInfoTextInCryptoInfoScreenWidget(label: 'Lowest Price Overall', value: '${crypto.atl.toStringAsFixed(2)} \$'),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Circulating Supply',
+                  value: '${crypto.circulatingSupply.toStringAsFixed(2)}'),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Total Supply',
+                  value: '${crypto.totalSupply.toStringAsFixed(2)}'),
+              if (crypto.maxSupply != null)
+                TextInfoTextInCryptoInfoScreenWidget(
+                    label: 'Max Supply',
+                    value: '${crypto.maxSupply!.toStringAsFixed(2)}'),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Highest Price Overall',
+                  value: '${crypto.ath.toStringAsFixed(2)} \$'),
+              TextInfoTextInCryptoInfoScreenWidget(
+                  label: 'Lowest Price Overall',
+                  value: '${crypto.atl.toStringAsFixed(2)} \$'),
             ],
           ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1,
+        currentIndex: 1, // هنا تحدد index بناءً على الشاشة الحالية
         onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);  // Go back when the first item is tapped
-          }
+          // هذا هو المكان المناسب لتحديد السلوك عند الضغط على أزرار البار
         },
       ),
     );

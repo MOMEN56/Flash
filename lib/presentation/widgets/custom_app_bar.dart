@@ -6,12 +6,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onSearchPressed;
   final bool showSearchIcon;
   final double titlePaddingLeft;
+  final bool showBackButton; // خاصية جديدة لتحديد إذا كانت الأيقونة تظهر أم لا
 
   CustomAppBar({
     super.key,
     this.onSearchPressed,
     this.showSearchIcon = true,
-    this.titlePaddingLeft = 80.0,  // تعيين قيمة افتراضية 70
+    this.titlePaddingLeft = 80.0, // تعيين قيمة افتراضية 70
+    this.showBackButton = true, // تعيين قيمة افتراضية true لعرض الأيقونة
   }) : preferredSize = Size.fromHeight(kToolbarHeight);
 
   @override
@@ -23,7 +25,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Color(kPrimaryColor),
       iconTheme: IconThemeData(color: Colors.white), // لون أيقونة الباك
       title: Padding(
-        padding: EdgeInsets.only(left: titlePaddingLeft.h), // استخدام البادينج المحدد
+        padding: EdgeInsets.only(
+            left: titlePaddingLeft.h), // استخدام البادينج المحدد
         child: Row(
           children: [
             Text(
@@ -39,6 +42,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ),
+      leading: showBackButton
+          ? IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 32.w),
+              onPressed: () => Navigator.pop(context),
+            )
+          : null, // إذا كانت الخاصية showBackButton غير مفعلة، لا تظهر أيقونة الرجوع
       actions: showSearchIcon
           ? [
               IconButton(

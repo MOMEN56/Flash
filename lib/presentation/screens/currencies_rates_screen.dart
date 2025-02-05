@@ -127,7 +127,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                 onBackPressed: _stopSearching,
               ),
             )
-          : CustomAppBar(onSearchPressed: _startSearch),
+          : CustomAppBar(onSearchPressed: _startSearch,showBackButton: false,),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
@@ -295,6 +295,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                     );
                   },
                 ),
+                 bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 0, // هنا تحدد index بناءً على الشاشة الحالية
+        onTap: (index) {
+          // هذا هو المكان المناسب لتحديد السلوك عند الضغط على أزرار البار
+        },
+      ),
     );
   }
 }

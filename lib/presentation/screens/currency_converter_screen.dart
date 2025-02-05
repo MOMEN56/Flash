@@ -250,11 +250,9 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: 0, // هنا تحدد index بناءً على الشاشة الحالية
         onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);
-          }
+          // هذا هو المكان المناسب لتحديد السلوك عند الضغط على أزرار البار
         },
       ),
     );
