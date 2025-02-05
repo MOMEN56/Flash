@@ -1,3 +1,4 @@
+import 'package:flash/presentation/screens/currency_converter_screen.dart';
 import 'package:flash/presentation/widgets/error_message_widget.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,14 +28,14 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   String errorMessage = '';
   final List<String> currencyList = [];
   final List<String> filteredCurrencyList = [];
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
   String url = "$baseCurrencyUrl$comparisonCurrency";
   Map<String, bool> favoriteCurrencies = {};
-  final CurrenciesWebService _currenciesWebService = CurrenciesWebService(dio: Dio());
+  final CurrenciesWebService _currenciesWebService =
+      CurrenciesWebService(dio: Dio());
   final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
-  // CacheManager instance for caching the flags
-  final CacheManager _cacheManager = CacheManager(Config('customCacheKey', stalePeriod: Duration(days: 30), maxNrOfCacheObjects: 180));
+  final CacheManager _cacheManager = CacheManager(Config('customCacheKey',
+      stalePeriod: Duration(days: 30), maxNrOfCacheObjects: 180));
 
   Future<void> fetchRates() async {
     try {
@@ -46,18 +47,11 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
         currencyList.addAll(rates!.keys);
         filteredCurrencyList.clear();
         filteredCurrencyList.addAll(currencyList);
-        _insertItems();
       });
     } catch (e) {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  void _insertItems() {
-    for (int i = 0; i < filteredCurrencyList.length; i++) {
-      _listKey.currentState?.insertItem(i);
     }
   }
 
@@ -75,7 +69,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
             .toList());
       }
       errorMessage = filteredCurrencyList.isEmpty ? 'No currencies found' : '';
-      _insertItems();
     });
   }
 
@@ -139,166 +132,159 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
           ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
               ? ErrorMessageWidget(errorMessage: errorMessage)
-              : Column(
-                  children: [
-                    Expanded(
-                      child: AnimatedList(
-                        controller: _scrollController,
-                        key: _listKey,
-                        initialItemCount: filteredCurrencyList.length,
-                        itemBuilder: (context, index, animation) {
-                          if (index < filteredCurrencyList.length) {
-                            final currency = filteredCurrencyList[index];
-                            final rate = rates![currency];
+              : ListView.builder(
+                  controller: _scrollController,
+                  itemCount: filteredCurrencyList.length,
+                  itemBuilder: (context, index) {
+                    final currency = filteredCurrencyList[index];
+                    final rate = rates![currency];
 
-                            // Preload the image for caching
-                            precacheImage(NetworkImage(
-                                'https://www.example.com/${currency}.png'),
-                                context);
+                    precacheImage(
+                      NetworkImage('https://www.example.com/${currency}.png'),
+                      context,
+                    );
 
-                            return GestureDetector(
-                              onTap: () => _onCurrencyTap(currency),
-                              child: SlideTransition(
-                                position: animation.drive(
-                                  Tween<Offset>(
-                                      begin: const Offset(1, 0),
-                                      end: const Offset(0, 0)),
-                                ),
-                                child: Container(
-                                  height: 72.5.h,
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: 8.h, horizontal: 12.w),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF5d6d7e),
-                                    borderRadius: BorderRadius.circular(16),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        blurRadius: 6,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
+                    return GestureDetector(
+                      onTap: () => _onCurrencyTap(currency),
+                      child: Container(
+                        height: 72.5.h,
+                        margin: EdgeInsets.symmetric(
+                            vertical: 8.h, horizontal: 12.w),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF5d6d7e),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: ListTile(
+                            contentPadding: EdgeInsets.only(left: 8.h),
+                            leading: FutureBuilder<String?>(
+                              future:
+                                  _currencyFlag.fetchFlagByCurrency(currency),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return const Icon(Icons.error);
+                                } else if (snapshot.hasData) {
+                                  return CachedNetworkImage(
+                                    imageUrl: snapshot.data!,
+                                    cacheManager: _cacheManager,
+                                    imageBuilder: (context, imageProvider) =>
+                                        CircleAvatar(
+                                      radius: 28.h,
+                                      backgroundImage: imageProvider,
+                                    ),
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  );
+                                } else {
+                                  return const Icon(Icons.flag);
+                                }
+                              },
+                            ),
+                            title: Row(
+                              children: [
+                                Text(
+                                  currency,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  child: Center(
-                                    child: ListTile(
-                                      contentPadding: EdgeInsets.only(left: 8.h),
-                                      leading: FutureBuilder<String?>(
-                                        future: _currencyFlag
-                                            .fetchFlagByCurrency(currency),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return const CircularProgressIndicator();
-                                          } else if (snapshot.hasError) {
-                                            return const Icon(Icons.error);
-                                          } else if (snapshot.hasData) {
-                                            return CachedNetworkImage(
-                                              imageUrl: snapshot.data!,
-                                              cacheManager: _cacheManager,
-                                              imageBuilder:
-                                                  (context, imageProvider) =>
-                                                      CircleAvatar(
-                                                radius: 28.h,
-                                                backgroundImage: imageProvider,
-                                              ),
-                                              placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                            );
-                                          } else {
-                                            return const Icon(Icons.flag);
-                                          }
-                                        },
-                                      ),
-                                      title: Row(
-                                        children: [
-                                          // اسم العملة
-                                          Text(
-                                            currency,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 20.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          if (currency !=
-                                              comparisonCurrency) ...[
-                                            Spacer(flex: 10),
-                                            Text(
-                                              rate.toString(),
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: Icon(
-                                                Icons.favorite,
-                                                size: 20.w,
-                                                color: favoriteCurrencies[
-                                                            currency] ??
-                                                        false
-                                                    ? Colors.red
-                                                    : Colors.grey,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  favoriteCurrencies[currency] =
-                                                      !(favoriteCurrencies[
-                                                              currency] ??
-                                                          false);
-                                                });
-                                              },
-                                            ),
-                                            Icon(Icons.currency_exchange,
-                                                size: 22.w),
-                                            Spacer(),
-                                          ] else ...[
-                                            Spacer(flex: 1),
-                                            Text(
-                                              'Comparison Currency',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 10.sp,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: Icon(
-                                                Icons.favorite,
-                                                size: 20.w,
-                                                color: favoriteCurrencies[
-                                                            currency] ??
-                                                        false
-                                                    ? Colors.red
-                                                    : Colors.grey,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  favoriteCurrencies[currency] =
-                                                      !(favoriteCurrencies[
-                                                              currency] ??
-                                                          false);
-                                                });
-                                              },
-                                            ),
-                                            Spacer(flex: 1),
-                                          ],
-                                        ],
-                                      ),
+                                ),
+                                if (currency != comparisonCurrency) ...[
+                                  Spacer(flex: 10),
+                                  Text(
+                                    rate.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }
-                          return SizedBox.shrink();
-                        },
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.favorite,
+                                      size: 20.w,
+                                      color:
+                                          favoriteCurrencies[currency] ?? false
+                                              ? Colors.red
+                                              : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        favoriteCurrencies[currency] =
+                                            !(favoriteCurrencies[currency] ??
+                                                false);
+                                      });
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.currency_exchange,
+                                      size: 22.w,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              CurrencyConverterScreen(
+                                            comparisonCurrency: "USD",
+                                            selectedCurrency: "EUR",
+                                            comparisonRate: 1.10,
+                                            selectedRate: 0.98,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  Spacer(),
+                                ] else ...[
+                                  Spacer(flex: 1),
+                                  Text(
+                                    'Comparison Currency',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.favorite,
+                                      size: 20.w,
+                                      color:
+                                          favoriteCurrencies[currency] ?? false
+                                              ? Colors.red
+                                              : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        favoriteCurrencies[currency] =
+                                            !(favoriteCurrencies[currency] ??
+                                                false);
+                                      });
+                                    },
+                                  ),
+                                  Spacer(flex: 1),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
     );
   }
