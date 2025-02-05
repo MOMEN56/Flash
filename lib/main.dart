@@ -14,7 +14,7 @@ import 'package:flash/app_router.dart';
 void main() {
   runApp(const Flash());
 }
-
+    
 class Flash extends StatelessWidget {
   const Flash({super.key});
 

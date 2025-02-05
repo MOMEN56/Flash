@@ -234,15 +234,24 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                       size: 22.w,
                                     ),
                                     onPressed: () {
+                                      // تمرير العملة المختارة وسعرها إلى شاشة التحويل
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               CurrencyConverterScreen(
-                                            comparisonCurrency: "USD",
-                                            selectedCurrency: "EUR",
-                                            comparisonRate: 1.10,
-                                            selectedRate: 0.98,
+                                            comparisonCurrency:
+                                                comparisonCurrency, // العملة المقارنة
+                                            selectedCurrency:
+                                                currency, // العملة التي تم اختيارها
+                                            comparisonCurrencyRate: (rates![
+                                                comparisonCurrency]).toDouble(), // سعر العملة المقارنة
+                                            selectedCurrencyRate:
+                                                rate, // سعر العملة المختارة
+                                            comparisonCurrencyFlagUrl:
+                                                "https://example.com/${comparisonCurrency}.png", // رابط علم العملة المقارنة
+                                            selectedCurrencyFlagUrl:
+                                                "https://example.com/${currency}.png", // رابط علم العملة المختارة
                                           ),
                                         ),
                                       );
