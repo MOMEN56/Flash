@@ -5,15 +5,11 @@ import 'package:flash/constants.dart';
 import 'package:flash/presentation/screens/crypto_info_screen.dart';
 import 'package:flash/presentation/screens/crypto_rates_screen.dart';
 import 'package:flash/presentation/screens/currencies_rates_screen.dart';
+import 'package:flash/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class BottomNavigationState extends State<HomeScreen> {
   int currentIndex = 0;
   CryptoModel? selectedCrypto;
 

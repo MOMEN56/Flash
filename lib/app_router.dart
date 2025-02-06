@@ -17,9 +17,9 @@ class AppRouter {
       case '/NoConnectionScreen':
         return MaterialPageRoute(builder: (_) => NoConnectionScreen());
       case '/CurrenciesRatesScreen':
-        return MaterialPageRoute(builder: (_) => CurrenciesRatesScreen());
+       // return MaterialPageRoute(builder: (_) => CurrenciesRatesScreen());
       case '/CryptoRatesScreen':
-        return MaterialPageRoute(builder: (_) => CryptoRatesScreen());
+       // return MaterialPageRoute(builder: (_) => CryptoRatesScreen());
       case '/CryptoInfoScreen':
         if (settings.arguments is CryptoModel) {
           final crypto = settings.arguments as CryptoModel;

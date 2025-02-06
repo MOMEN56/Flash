@@ -4,6 +4,7 @@ import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flash/data/web_services/currency_flag_services.dart'; // Import CurrencyFlag service
+import 'package:cached_network_image/cached_network_image.dart'; // Add CachedNetworkImage
 
 class CurrencyConverterScreen extends StatefulWidget {
   final String comparisonCurrency;
@@ -30,17 +31,12 @@ class CurrencyConverterScreen extends StatefulWidget {
 
 class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   bool isSwapped = false;
-  final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
   final TextEditingController _amountController = TextEditingController();
   double result = 1.0;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Future<String?> _fetchFlag(String currencyCode) async {
-    return await _currencyFlag.fetchFlagByCurrency(currencyCode);
   }
 
   void _calculateResult() {
@@ -75,23 +71,14 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            FutureBuilder<String?>(
-              future: _fetchFlag(currencyName),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return const Icon(Icons.error);
-                } else if (snapshot.hasData) {
-                  return CircleAvatar(
-                    radius: 40.h,
-                    backgroundImage: NetworkImage(snapshot.data!),
-                    backgroundColor: Colors.transparent,
-                  );
-                } else {
-                  return const Icon(Icons.flag);
-                }
-              },
+            CachedNetworkImage(
+              imageUrl: flagUrl,
+              imageBuilder: (context, imageProvider) => CircleAvatar(
+                radius: 40.h,
+                backgroundImage: imageProvider,
+              ),
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
             SizedBox(width: 8.w),
             Text(
@@ -248,12 +235,6 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 0, // هنا تحدد index بناءً على الشاشة الحالية
-        onTap: (index) {
-          // هذا هو المكان المناسب لتحديد السلوك عند الضغط على أزرار البار
-        },
       ),
     );
   }

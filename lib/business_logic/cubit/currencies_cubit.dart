@@ -4,38 +4,49 @@ import 'package:flash/data/web_services/currencies_web_services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
-part 'currencies_state.dart'; // تحديد الجزء المرتبط بالمكتبة
+part 'currencies_state.dart';
 
 class CurrenciesCubit extends Cubit<CurrenciesState> {
-  final CurrenciesWebService currenciesService; // استخدام CurrenciesService بدلاً من CurrenciesRepository
-  String baseCurrency = "USD";  // العملة الأساسية (يمكنك تعديلها حسب الحاجة)
+  final CurrenciesWebService currenciesService;
+  String baseCurrency = "USD";
+
+  // تخزين البيانات المحملة للحفاظ عليها عند التنقل
+  Map<String, CurrencyModel> cachedRates = {};
 
   CurrenciesCubit(this.currenciesService) : super(CurrenciesInitial());
 
-  // دالة لجلب العملات باستخدام baseCurrency
   Future<void> fetchCurrencies() async {
+    // التحقق من وجود بيانات مخزنة لتجنب إعادة الجلب
+    if (cachedRates.containsKey(baseCurrency)) {
+      emit(CurrenciesLoaded([cachedRates[baseCurrency]!]));
+      return;
+    }
+
     try {
       emit(CurrenciesLoading());
       final url = "$baseCurrencyUrl$baseCurrency";
-      final rates = await currenciesService.fetchRates(url);  // جلب البيانات باستخدام CurrenciesService مع baseCurrency المحددة
+      final rates =
+          (await currenciesService.fetchRates(url)) as Map<String, dynamic>;
 
-      // تحويل البيانات إلى نماذج CurrencyModel
-      final currenciesModel = rates.keys.map((currency) {
-        return CurrencyModel(
-          result: 'success', // استبدال القيمة الثابتة هنا حسب الحاجة
-          conversionRates: {currency: rates[currency]}, // إنشاء conversionRates باستخدام العملة
-        );
-      }).toList();
+      final sanitizedRates = rates.map(
+        (key, value) => MapEntry(key, (value as num).toDouble()),
+      );
 
-      emit(CurrenciesLoaded(currenciesModel)); // إرسال البيانات المحملة إلى الحالة
+      final currencyModel = CurrencyModel(
+        result: 'success',
+        conversionRates: sanitizedRates,
+      );
+      // تخزين البيانات في الكاش
+      cachedRates[baseCurrency] = currencyModel;
+
+      emit(CurrenciesLoaded([currencyModel]));
     } catch (e) {
       emit(CurrenciesError('حدث خطأ أثناء جلب العملات: $e'));
     }
   }
 
-  // دالة لتحديث baseCurrency عند تغيير العملة
   void updateBaseCurrency(String newCurrency) {
     baseCurrency = newCurrency;
-    fetchCurrencies(); // جلب العملات بعد تحديث العملة الأساسية
+    fetchCurrencies(); // جلب العملات إذا لم تكن موجودة في الكاش
   }
 }

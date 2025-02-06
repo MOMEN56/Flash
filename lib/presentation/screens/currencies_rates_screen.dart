@@ -1,17 +1,17 @@
-import 'package:flash/presentation/screens/currency_converter_screen.dart';
-import 'package:flash/presentation/widgets/error_message_widget.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flash/constants.dart';
-import 'package:flash/presentation/widgets/currency_search_widget.dart';
-import 'package:flash/presentation/widgets/custom_app_bar.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:vibration/vibration.dart';
+
+import 'package:flash/presentation/screens/currency_converter_screen.dart';
+import 'package:flash/presentation/widgets/error_message_widget.dart';
+import 'package:flash/presentation/widgets/currency_search_widget.dart';
+import 'package:flash/presentation/widgets/custom_app_bar.dart';
+import 'package:flash/constants.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
 import 'package:flash/data/web_services/currency_flag_services.dart';
-import 'package:dio/dio.dart';
-import 'package:vibration/vibration.dart';
 
 class CurrenciesRatesScreen extends StatefulWidget {
   const CurrenciesRatesScreen({super.key});
@@ -21,6 +21,7 @@ class CurrenciesRatesScreen extends StatefulWidget {
 }
 
 class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
+  int currentIndex = 0;
   Map<String, dynamic>? rates;
   bool isLoading = true;
   bool _isSearching = false;
@@ -37,6 +38,15 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final CacheManager _cacheManager = CacheManager(Config('customCacheKey',
       stalePeriod: Duration(days: 30), maxNrOfCacheObjects: 180));
 
+  // إضافة متغير لتخزين روابط الأعلام
+  Map<String, String?> currencyFlags = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRates();
+  }
+
   Future<void> fetchRates() async {
     try {
       final fetchedRates = await _currenciesWebService.fetchRates(url);
@@ -47,10 +57,24 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
         currencyList.addAll(rates!.keys);
         filteredCurrencyList.clear();
         filteredCurrencyList.addAll(currencyList);
+
+        // جلب روابط الأعلام وتخزينها
+        _loadFlags();
       });
     } catch (e) {
       setState(() {
         isLoading = false;
+        errorMessage = 'Failed to load data. Please try again later.';
+      });
+    }
+  }
+
+  // دالة لجلب روابط الأعلام
+  Future<void> _loadFlags() async {
+    for (var currency in currencyList) {
+      final flagUrl = await _currencyFlag.fetchFlagByCurrency(currency);
+      setState(() {
+        currencyFlags[currency] = flagUrl;
       });
     }
   }
@@ -78,12 +102,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
       _searchTextController.clear();
       addSearchedForCurrencyToSearchedList('');
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchRates();
   }
 
   void _startSearch() {
@@ -114,6 +132,22 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     fetchRates();
   }
 
+  void _onConvertPressed(String currency, double rate) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CurrencyConverterScreen(
+          comparisonCurrency: comparisonCurrency,
+          selectedCurrency: currency,
+          comparisonCurrencyRate: rates![comparisonCurrency].toDouble(),
+          selectedCurrencyRate: rate,
+          comparisonCurrencyFlagUrl: currencyFlags[comparisonCurrency] ?? "",
+          selectedCurrencyFlagUrl: currencyFlags[currency] ?? "",
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +161,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                 onBackPressed: _stopSearching,
               ),
             )
-          : CustomAppBar(onSearchPressed: _startSearch,showBackButton: false,),
+          : CustomAppBar(onSearchPressed: _startSearch, showBackButton: false),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
@@ -138,11 +172,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                   itemBuilder: (context, index) {
                     final currency = filteredCurrencyList[index];
                     final rate = rates![currency];
-
-                    precacheImage(
-                      NetworkImage('https://www.example.com/${currency}.png'),
-                      context,
-                    );
 
                     return GestureDetector(
                       onTap: () => _onCurrencyTap(currency),
@@ -163,18 +192,9 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                         child: Center(
                           child: ListTile(
                             contentPadding: EdgeInsets.only(left: 8.h),
-                            leading: FutureBuilder<String?>(
-                              future:
-                                  _currencyFlag.fetchFlagByCurrency(currency),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Icon(Icons.error);
-                                } else if (snapshot.hasData) {
-                                  return CachedNetworkImage(
-                                    imageUrl: snapshot.data!,
+                            leading: currencyFlags.containsKey(currency)
+                                ? CachedNetworkImage(
+                                    imageUrl: currencyFlags[currency]!,
                                     cacheManager: _cacheManager,
                                     imageBuilder: (context, imageProvider) =>
                                         CircleAvatar(
@@ -185,12 +205,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                         const CircularProgressIndicator(),
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.error),
-                                  );
-                                } else {
-                                  return const Icon(Icons.flag);
-                                }
-                              },
-                            ),
+                                  )
+                                : const Icon(Icons.flag),
                             title: Row(
                               children: [
                                 Text(
@@ -234,27 +250,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                       size: 22.w,
                                     ),
                                     onPressed: () {
-                                      // تمرير العملة المختارة وسعرها إلى شاشة التحويل
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              CurrencyConverterScreen(
-                                            comparisonCurrency:
-                                                comparisonCurrency, // العملة المقارنة
-                                            selectedCurrency:
-                                                currency, // العملة التي تم اختيارها
-                                            comparisonCurrencyRate: (rates![
-                                                comparisonCurrency]).toDouble(), // سعر العملة المقارنة
-                                            selectedCurrencyRate:
-                                                rate, // سعر العملة المختارة
-                                            comparisonCurrencyFlagUrl:
-                                                "https://example.com/${comparisonCurrency}.png", // رابط علم العملة المقارنة
-                                            selectedCurrencyFlagUrl:
-                                                "https://example.com/${currency}.png", // رابط علم العملة المختارة
-                                          ),
-                                        ),
-                                      );
+                                      _onConvertPressed(currency, rate);
                                     },
                                   ),
                                   Spacer(),
@@ -295,12 +291,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                     );
                   },
                 ),
-                 bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 0, // هنا تحدد index بناءً على الشاشة الحالية
-        onTap: (index) {
-          // هذا هو المكان المناسب لتحديد السلوك عند الضغط على أزرار البار
-        },
-      ),
     );
   }
 }

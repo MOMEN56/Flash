@@ -1,6 +1,8 @@
+import 'package:flash/business_logic/cubit/custom_bottom_navigation_cubit.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/presentation/widgets/text_info_in_crypto_info_screen_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
@@ -15,7 +17,6 @@ class CryptoInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 28.h),
       body: SingleChildScrollView(
-        // Wrap the content with SingleChildScrollView to enable scrolling
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -33,8 +34,6 @@ class CryptoInfoScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // Add CryptoModel details below
               TextInfoTextInCryptoInfoScreenWidget(
                   label: 'Name', value: crypto.name),
               TextInfoTextInCryptoInfoScreenWidget(
@@ -54,23 +53,23 @@ class CryptoInfoScreen extends StatelessWidget {
               TextInfoTextInCryptoInfoScreenWidget(
                 label: 'Highest Price In The Last 24 Hours',
                 value: '${crypto.high24h.toStringAsFixed(2)} \$',
-                fontSize: 9.sp, // Set smaller font size
+                fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                 label: 'Lowest Price In The Last 24 Hours',
                 value: '${crypto.low24h.toStringAsFixed(2)} \$',
-                fontSize: 9.sp, // Set smaller font size
+                fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                 label: 'Price Change In The Last 24 Hour',
                 value: '${crypto.priceChange24h.toStringAsFixed(2)} \$',
-                fontSize: 9.sp, // Set smaller font size
+                fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                 label: 'Price Change Percentage In The Last 24 Hour',
                 value:
                     '${crypto.priceChangePercentage24h.toStringAsFixed(2)} %',
-                fontSize: 9.sp, // Set smaller font size
+                fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                   label: 'Circulating Supply',
@@ -91,12 +90,6 @@ class CryptoInfoScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1, // هنا تحدد index بناءً على الشاشة الحالية
-        onTap: (index) {
-          // هذا هو المكان المناسب لتحديد السلوك عند الضغط على أزرار البار
-        },
       ),
     );
   }

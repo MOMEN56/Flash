@@ -8,7 +8,7 @@ class CurrenciesInitial extends CurrenciesState {}
 class CurrenciesLoading extends CurrenciesState {}
 
 class CurrenciesLoaded extends CurrenciesState {
-  final List<CurrencyModel> currencies; // استخدام النوع الموحد
+  final List<CurrencyModel> currencies; // نحتفظ بالقائمة لتخزين جميع العملات
   CurrenciesLoaded(this.currencies);
 }
 
