@@ -73,9 +73,18 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
           children: [
             CachedNetworkImage(
               imageUrl: flagUrl,
-              imageBuilder: (context, imageProvider) => CircleAvatar(
-                radius: 40.h,
-                backgroundImage: imageProvider,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle, // شكل دائري
+                  border: Border.all(
+                    color: Colors.white, // لون الحدود (أبيض)
+                    width: 3.0, // سمك الحدود
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 40.h, // نصف القطر
+                  backgroundImage: imageProvider, // الصورة
+                ),
               ),
               placeholder: (context, url) => const CircularProgressIndicator(),
               errorWidget: (context, url, error) => const Icon(Icons.error),

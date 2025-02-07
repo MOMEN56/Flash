@@ -12,33 +12,27 @@ class CurrencyFlag {
       return _cachedFlags[currencyCode]; // إرجاع الرابط من الكاش
     }
 
-    try {
-      // إذا كانت العملة هي USD أو EUR، نرجع الرابط مباشرة
-      if (currencyCode == 'USD') {
-        return 'https://flagcdn.com/w320/us.png';
-      }
-      if (currencyCode == 'EUR') {
-        return 'https://flagcdn.com/w320/eu.png';
-      }
+    // إذا كانت العملة هي USD أو EUR، نرجع الرابط مباشرة
+    if (currencyCode == 'USD') {
+      return 'https://flagcdn.com/w320/us.png';
+    }
+    if (currencyCode == 'EUR') {
+      return 'https://flagcdn.com/w320/eu.png';
+    }
 
-      // طلب البيانات من API الدول
-      final response = await dio.get('https://restcountries.com/v3.1/all');
-      if (response.statusCode == 200) {
-        final List<dynamic> countries = response.data;
+    // طلب البيانات من API الدول
+    final response = await dio.get('https://restcountries.com/v3.1/all');
+    if (response.statusCode == 200) {
+      final List<dynamic> countries = response.data;
 
-        for (var country in countries) {
-          if (country['currencies'] != null && country['currencies'][currencyCode] != null) {
-            String flagUrl = country['flags']['png'];
-            _cachedFlags[currencyCode] = flagUrl; // حفظ الرابط في الكاش
-            return flagUrl;
-          }
+      for (var country in countries) {
+        if (country['currencies'] != null &&
+            country['currencies'][currencyCode] != null) {
+          String flagUrl = country['flags']['png'];
+          _cachedFlags[currencyCode] = flagUrl; // حفظ الرابط في الكاش
+          return flagUrl;
         }
-        throw Exception('Currency not found in any country');
-      } else {
-        throw Exception('Failed to load countries');
       }
-    } catch (e) {
-      throw Exception('Error occurred: $e');
     }
   }
 }

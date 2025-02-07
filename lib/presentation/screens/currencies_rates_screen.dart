@@ -197,9 +197,20 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                     imageUrl: currencyFlags[currency]!,
                                     cacheManager: _cacheManager,
                                     imageBuilder: (context, imageProvider) =>
-                                        CircleAvatar(
-                                      radius: 28.h,
-                                      backgroundImage: imageProvider,
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle, // شكل دائري
+                                        border: Border.all(
+                                          color:
+                                              Colors.white, // لون الحدود (أبيض)
+                                          width: 2.0, // سمك الحدود
+                                        ),
+                                      ),
+                                      child: CircleAvatar(
+                                        radius: 28.h, // نصف القطر
+                                        backgroundImage:
+                                            imageProvider, // الصورة
+                                      ),
                                     ),
                                     placeholder: (context, url) =>
                                         const CircularProgressIndicator(),
