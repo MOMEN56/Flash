@@ -164,6 +164,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
           ? PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
               child: CurrencySearchWidget(
+                searchHint: "Search for a currency...",
                 searchTextController: _searchTextController,
                 addSearchedForCurrencyToSearchedList:
                     addSearchedForCurrencyToSearchedList,

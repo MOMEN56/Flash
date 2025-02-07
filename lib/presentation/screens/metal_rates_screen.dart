@@ -2,7 +2,7 @@ import 'package:flash/constants.dart';
 import 'package:flash/data/models/matal_model.dart';
 import 'package:flash/data/web_services/metal_web_services.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:flash/presentation/widgets/error_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -13,7 +13,7 @@ class MetalRatesScreen extends StatefulWidget {
 
 class _MetalRatesScreenState extends State<MetalRatesScreen> {
   late Future<MetalModel> futureMetalPrices;
-  int currentIndex = 2; //  هذا هو الرقم الصحيح لشاشة المعادن
+  int currentIndex = 2;
   bool _isSearching = false;
   final TextEditingController _searchTextController = TextEditingController();
   List<String> metalList = [];
@@ -24,7 +24,21 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
   @override
   void initState() {
     super.initState();
+    _resetSearchState();
     futureMetalPrices = WebService().fetchMetalPrices();
+  }
+
+  void _resetSearchState() {
+    setState(() {
+      _isSearching = false;
+      _searchTextController.clear();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _resetSearchState();
   }
 
   void addSearchedForMetalToSearchedList(String searchedMetal) {
@@ -39,9 +53,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
             .where((metal) =>
                 metal.toLowerCase().startsWith(searchedMetal.toLowerCase()))
             .toList());
-        errorMessage = filteredMetalList.isEmpty
-            ? 'No metals found'
-            : '';
+        errorMessage = filteredMetalList.isEmpty ? 'No metals found' : '';
       }
     });
   }
@@ -88,7 +100,9 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return ErrorMessageWidget(
+              errorMessage: 'Error: ${snapshot.error}',
+            );
           } else if (snapshot.hasData) {
             final prices = snapshot.data!.getMetalPrices();
             metalList = prices.keys.toList();
@@ -97,27 +111,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
             }
 
             if (errorMessage.isNotEmpty) {
-              return Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      errorMessage,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 8.h),
-                    Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 35.w,
-                    ),
-                  ],
-                ),
-              );
+              return ErrorMessageWidget(errorMessage: errorMessage);
             }
 
             return ListView.builder(
@@ -204,7 +198,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
               },
             );
           } else {
-            return Center(child: Text('No data available'));
+            return ErrorMessageWidget(errorMessage: 'No data available');
           }
         },
       ),

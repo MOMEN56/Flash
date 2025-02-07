@@ -93,6 +93,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
           ? PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
               child: CurrencySearchWidget(
+                searchHint: "Search for a crypto...",
                 searchTextController: _searchTextController,
                 addSearchedForCurrencyToSearchedList:
                     addSearchedForCryptoToSearchedList,
