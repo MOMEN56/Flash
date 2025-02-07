@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // Import here
-import 'package:flash/data/web_services/currency_flag_services.dart';
+import 'package:flash/data/web_services/currency_flag_web_services.dart';
 
 class CurrencyConverterScreen extends StatefulWidget {
   final CurrencyConverterModel model;

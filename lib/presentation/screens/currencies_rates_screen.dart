@@ -12,7 +12,7 @@ import 'package:flash/presentation/widgets/currency_search_widget.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/constants.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
-import 'package:flash/data/web_services/currency_flag_services.dart';
+import 'package:flash/data/web_services/currency_flag_web_services.dart';
 
 class CurrenciesRatesScreen extends StatefulWidget {
   const CurrenciesRatesScreen({super.key});
