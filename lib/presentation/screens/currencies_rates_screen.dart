@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flash/data/models/currency_converter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -132,21 +133,27 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     fetchRates();
   }
 
-  void _onConvertPressed(String currency, double rate) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CurrencyConverterScreen(
-          comparisonCurrency: comparisonCurrency,
-          selectedCurrency: currency,
-          comparisonCurrencyRate: rates![comparisonCurrency].toDouble(),
-          selectedCurrencyRate: rate,
-          comparisonCurrencyFlagUrl: currencyFlags[comparisonCurrency] ?? "",
-          selectedCurrencyFlagUrl: currencyFlags[currency] ?? "",
-        ),
+void _onConvertPressed(String currency, double rate) {
+  // Create an instance of CurrencyConverterModel
+  CurrencyConverterModel model = CurrencyConverterModel(
+    comparisonCurrency: comparisonCurrency,
+    selectedCurrency: currency,
+    comparisonCurrencyRate: rates![comparisonCurrency].toDouble(),
+    selectedCurrencyRate: rate,
+    comparisonCurrencyFlagUrl: currencyFlags[comparisonCurrency] ?? "",
+    selectedCurrencyFlagUrl: currencyFlags[currency] ?? "",
+  );
+
+  // Pass the model to CurrencyConverterScreen
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CurrencyConverterScreen(
+        model: model, // Pass the model here
       ),
-    );
-  }
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

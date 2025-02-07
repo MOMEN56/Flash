@@ -1,57 +1,71 @@
-import 'package:flash/business_logic/cubit/custom_bottom_navigation_cubit.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flash/constants.dart';
-import 'package:flash/presentation/screens/crypto_info_screen.dart';
-import 'package:flash/presentation/screens/crypto_rates_screen.dart';
-import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flash/data/models/cyrpto_model.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
+import 'package:flash/presentation/screens/no_connection_screen.dart';
+import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currentIndex = 0;
-  CryptoModel? selectedCrypto;
+  bool isConnected = true;
+  int _currentIndex = 0; // لتحديد الشاشة المختارة في الشريط السفلي
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInitialConnection();
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> resultList) {
+      _updateConnectionStatus(resultList);
+    });
+  }
+
+  Future<void> _checkInitialConnection() async {
+    final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+  }
+
+  void _updateConnectionStatus(List<ConnectivityResult> resultList) {
+    setState(() {
+      isConnected = resultList.isNotEmpty && resultList.first != ConnectivityResult.none;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> screens = [
-      const CurrenciesRatesScreen(),
-      CryptoRatesScreen(onCryptoSelected: (crypto) {
-        setState(() {
-          selectedCrypto = crypto;
-          currentIndex = 1; // انتقل إلى CryptoRatesScreen
-        });
-      }),
-      if (selectedCrypto != null) CryptoInfoScreen(crypto: selectedCrypto!),
-    ];
-
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens,
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          // تأكد من أن index في نطاق العناصر المتاحة
-          setState(() {
-            if (index < 0 || index >= screens.length) {
-              return; // تجنب تعيين index خارج النطاق
-            }
-            currentIndex = index;
-
-            // إعادة تعيين العملة المحددة عند الانتقال إلى Currency
-            if (index == 0) {
-              selectedCrypto = null;
-            }
-          });
-        },
-      ),
+      body: isConnected
+          ? IndexedStack(
+              index: _currentIndex, // عرض الشاشة المختارة بناءً على _currentIndex
+              children: const [
+                 CurrenciesRatesScreen(),
+                 CryptoRatesScreen(),
+                
+                
+              ],
+            )
+          :  NoConnectionScreen(), // عرض شاشة "لا يوجد اتصال" عند انقطاع الاتصال
+      bottomNavigationBar: isConnected
+          ? CustomBottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+                // التنقل باستخدام Navigator.pushReplacementNamed
+                if (index == 0) {
+                  Navigator.pushReplacementNamed(context, '/currenciesRates');
+                } else if (index == 1) {
+                  Navigator.pushReplacementNamed(context, '/cryptoRates');
+                }
+              },
+            )
+          : null,
     );
   }
 }

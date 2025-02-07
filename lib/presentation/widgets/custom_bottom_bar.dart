@@ -1,13 +1,13 @@
-// CustomBottomNavigationBar.dart
+// CustomBottomBar.dart
 import 'package:flash/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomBottomNavigationBar extends StatelessWidget {
+class CustomBottomBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  const CustomBottomNavigationBar({
+  const CustomBottomBar({
     Key? key,
     required this.currentIndex,
     required this.onTap,

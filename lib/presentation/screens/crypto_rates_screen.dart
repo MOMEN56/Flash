@@ -1,4 +1,3 @@
-import 'package:flash/business_logic/cubit/custom_bottom_navigation_cubit.dart';
 import 'package:flash/constants.dart';
 import 'package:flash/presentation/widgets/currency_search_widget.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
@@ -100,7 +99,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                 onBackPressed: _stopSearching,
               ),
             )
-          : CustomAppBar(onSearchPressed: _startSearch, showBackButton: false),
+          : CustomAppBar(onSearchPressed: _startSearch,showBackButton: false, ),
       body: errorMessage.isNotEmpty
           ? ErrorMessageWidget(errorMessage: errorMessage)
           : cryptos.isEmpty
@@ -222,6 +221,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                     );
                   },
                 ),
+                
     );
   }
 }

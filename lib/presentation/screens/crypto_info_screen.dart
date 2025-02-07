@@ -1,11 +1,11 @@
-import 'package:flash/business_logic/cubit/custom_bottom_navigation_cubit.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/presentation/widgets/text_info_in_crypto_info_screen_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
+import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 
 class CryptoInfoScreen extends StatelessWidget {
   final CryptoModel crypto;
@@ -14,8 +14,11 @@ class CryptoInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      int _currentIndex = 0; // Track bottom bar index
+
     return Scaffold(
-      appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 28.h),
+      appBar:
+          CustomAppBar(showSearchIcon: false, titlePaddingLeft: 28.h),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.w),
@@ -91,6 +94,7 @@ class CryptoInfoScreen extends StatelessWidget {
           ),
         ),
       ),
+      
     );
   }
 }

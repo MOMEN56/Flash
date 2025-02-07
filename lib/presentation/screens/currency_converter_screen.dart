@@ -1,28 +1,17 @@
-import 'package:dio/dio.dart';
-import 'package:flash/presentation/widgets/custom_app_bar.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:flash/data/models/currency_converter_model.dart';
+import 'package:flash/presentation/screens/crypto_rates_screen.dart';
+import 'package:flash/presentation/widgets/custom_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flash/data/web_services/currency_flag_services.dart'; // Import CurrencyFlag service
-import 'package:cached_network_image/cached_network_image.dart'; // Add CachedNetworkImage
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flash/presentation/widgets/custom_app_bar.dart';
+import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // Import here
+import 'package:flash/data/web_services/currency_flag_services.dart';
 
 class CurrencyConverterScreen extends StatefulWidget {
-  final String comparisonCurrency;
-  final String selectedCurrency;
-  final double comparisonCurrencyRate;
-  final double selectedCurrencyRate;
-  final String comparisonCurrencyFlagUrl;
-  final String selectedCurrencyFlagUrl;
+  final CurrencyConverterModel model;
 
-  const CurrencyConverterScreen({
-    super.key,
-    required this.comparisonCurrency,
-    required this.selectedCurrency,
-    required this.comparisonCurrencyRate,
-    required this.selectedCurrencyRate,
-    required this.comparisonCurrencyFlagUrl,
-    required this.selectedCurrencyFlagUrl,
-  });
+  const CurrencyConverterScreen({super.key, required this.model});
 
   @override
   _CurrencyConverterScreenState createState() =>
@@ -33,6 +22,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   bool isSwapped = false;
   final TextEditingController _amountController = TextEditingController();
   double result = 1.0;
+  int _currentIndex = 0; // Track bottom bar index
 
   @override
   void initState() {
@@ -42,7 +32,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   void _calculateResult() {
     double enteredAmount = double.tryParse(_amountController.text) ?? 0.0;
     setState(() {
-      result = enteredAmount * widget.selectedCurrencyRate;
+      result = enteredAmount * widget.model.selectedCurrencyRate;
     });
   }
 
@@ -54,10 +44,10 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
     double heightRatio,
   ) {
     return Container(
-      height: 220.h * heightRatio,
+      height: 200.h * heightRatio,
       margin: EdgeInsets.symmetric(vertical: 15.h),
       decoration: BoxDecoration(
-        color: Color(0xFF5d6d7e),
+        color: const Color(0xFF5d6d7e),
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
@@ -67,7 +57,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 12.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -75,15 +65,15 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
               imageUrl: flagUrl,
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle, // شكل دائري
+                  shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white, // لون الحدود (أبيض)
-                    width: 3.0, // سمك الحدود
+                    color: Colors.white,
+                    width: 3.0,
                   ),
                 ),
                 child: CircleAvatar(
-                  radius: 40.h, // نصف القطر
-                  backgroundImage: imageProvider, // الصورة
+                  radius: 40.h,
+                  backgroundImage: imageProvider,
                 ),
               ),
               placeholder: (context, url) => const CircularProgressIndicator(),
@@ -98,27 +88,27 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             if (isComparisonCurrency)
               !isSwapped
-                  ? Container(
-                      width: 120.w,
+                  ? SizedBox(
+                      width: 140.w,
                       child: TextField(
                         controller: _amountController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: "Amount",
-                          hintStyle: TextStyle(color: Colors.black),
+                          hintStyle: const TextStyle(color: Colors.grey),
                           filled: true,
-                          fillColor: Color(0xFF5d6d7e),
+                          fillColor: const Color(0xFF5d6d7e),
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
+                            borderSide: const BorderSide(color: Colors.white),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: const BorderSide(color: Colors.black),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
+                            borderSide: const BorderSide(color: Colors.white),
                           ),
                         ),
                         style: TextStyle(
@@ -142,28 +132,28 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                     ),
             if (!isComparisonCurrency)
               isSwapped
-                  ? Container(
-                      width: 120.w,
+                  ? SizedBox(
+                      width: 140.w,
                       child: TextField(
                         controller: _amountController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: "Amount",
-                          hintStyle: TextStyle(color: Colors.black),
+                          hintStyle: const TextStyle(color: Colors.grey),
                           filled: true,
-                          fillColor: Color(0xFF5d6d7e),
+                          fillColor: const Color(0xFF5d6d7e),
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
+                            borderSide: const BorderSide(color: Colors.white),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: const BorderSide(color: Colors.black),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
+                            borderSide: const BorderSide(color: Colors.white),
                           ),
                         ),
                         style: TextStyle(
-                          fontSize: 24.sp,
+                          fontSize: 18.sp,
                           color: Colors.black,
                         ),
                         onChanged: (value) {
@@ -199,18 +189,18 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 28.h),
       body: Padding(
-        padding: EdgeInsets.all(12.w),
+        padding: EdgeInsets.only(right: 12.h,left: 12.h,bottom: 50,top: 10.h),
         child: Stack(
           children: [
             AnimatedPositioned(
-              duration: Duration(milliseconds: 500),
-              top: isSwapped ? 320.h * heightRatio : 0,
+              duration: const Duration(milliseconds: 500),
+              top: isSwapped ? 350.h * heightRatio : 0,
               left: 12.w,
               right: 12.w,
               child: buildCurrencyContainer(
-                widget.comparisonCurrency,
-                widget.comparisonCurrencyRate,
-                widget.comparisonCurrencyFlagUrl,
+                widget.model.comparisonCurrency,
+                widget.model.comparisonCurrencyRate,
+                widget.model.comparisonCurrencyFlagUrl,
                 true,
                 heightRatio,
               ),
@@ -230,14 +220,14 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
               ),
             ),
             AnimatedPositioned(
-              duration: Duration(milliseconds: 500),
-              top: isSwapped ? 0 : 320.h * heightRatio,
+              duration: const Duration(milliseconds: 500),
+              top: isSwapped ? 0 : 350.h * heightRatio,
               left: 12.w,
               right: 12.w,
               child: buildCurrencyContainer(
-                widget.selectedCurrency,
-                widget.selectedCurrencyRate,
-                widget.selectedCurrencyFlagUrl,
+                widget.model.selectedCurrency,
+                widget.model.selectedCurrencyRate,
+                widget.model.selectedCurrencyFlagUrl,
                 false,
                 heightRatio,
               ),
