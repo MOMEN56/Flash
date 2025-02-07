@@ -1,6 +1,5 @@
 import 'package:flash/data/models/currency_converter_model.dart';
 import 'package:flash/presentation/screens/crypto_rates_screen.dart';
-import 'package:flash/presentation/widgets/custom_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -92,7 +91,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
             if (isComparisonCurrency)
               !isSwapped
                   ? SizedBox(
-                      width: 140.w,
+                      width: 120.h,
                       child: TextField(
                         controller: _amountController,
                         keyboardType: TextInputType.number,
@@ -133,7 +132,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
             if (!isComparisonCurrency)
               isSwapped
                   ? SizedBox(
-                      width: 140.w,
+                      width: 120.h,
                       child: TextField(
                         controller: _amountController,
                         keyboardType: TextInputType.number,
@@ -187,7 +186,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 28.h),
+      appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 30.h),
       body: Padding(
         padding: EdgeInsets.only(right: 12.h,left: 12.h,bottom: 50,top: 10.h),
         child: Stack(

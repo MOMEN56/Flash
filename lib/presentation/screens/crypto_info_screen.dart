@@ -18,7 +18,7 @@ class CryptoInfoScreen extends StatelessWidget {
 
     return Scaffold(
       appBar:
-          CustomAppBar(showSearchIcon: false, titlePaddingLeft: 28.h),
+          CustomAppBar(showSearchIcon: false, titlePaddingLeft: 30.h),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.w),

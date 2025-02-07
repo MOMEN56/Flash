@@ -14,6 +14,8 @@ import 'package:flash/constants.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
 import 'package:flash/data/web_services/currency_flag_web_services.dart';
 
+import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // تأكد من استيراد الودجت
+
 class CurrenciesRatesScreen extends StatefulWidget {
   const CurrenciesRatesScreen({super.key});
 
@@ -133,27 +135,27 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     fetchRates();
   }
 
-void _onConvertPressed(String currency, double rate) {
-  // Create an instance of CurrencyConverterModel
-  CurrencyConverterModel model = CurrencyConverterModel(
-    comparisonCurrency: comparisonCurrency,
-    selectedCurrency: currency,
-    comparisonCurrencyRate: rates![comparisonCurrency].toDouble(),
-    selectedCurrencyRate: rate,
-    comparisonCurrencyFlagUrl: currencyFlags[comparisonCurrency] ?? "",
-    selectedCurrencyFlagUrl: currencyFlags[currency] ?? "",
-  );
+  void _onConvertPressed(String currency, double rate) {
+    // Create an instance of CurrencyConverterModel
+    CurrencyConverterModel model = CurrencyConverterModel(
+      comparisonCurrency: comparisonCurrency,
+      selectedCurrency: currency,
+      comparisonCurrencyRate: rates![comparisonCurrency].toDouble(),
+      selectedCurrencyRate: rate,
+      comparisonCurrencyFlagUrl: currencyFlags[comparisonCurrency] ?? "",
+      selectedCurrencyFlagUrl: currencyFlags[currency] ?? "",
+    );
 
-  // Pass the model to CurrencyConverterScreen
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => CurrencyConverterScreen(
-        model: model, // Pass the model here
+    // Pass the model to CurrencyConverterScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CurrencyConverterScreen(
+          model: model, // Pass the model here
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +237,7 @@ void _onConvertPressed(String currency, double rate) {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                if (currency != comparisonCurrency) ...[
+                                if (currency != comparisonCurrency) ...[ 
                                   Spacer(flex: 10),
                                   Text(
                                     rate.toString(),

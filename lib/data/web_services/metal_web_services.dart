@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flash/constants.dart';
 import 'package:flash/data/models/matal_model.dart';
 
 class WebService {
@@ -6,10 +7,10 @@ class WebService {
 
   // الدالة لجلب بيانات المعادن من الـ API
   Future<MetalModel> fetchMetalPrices() async {
-    final url = 'https://api.metals.dev/v1/latest?api_key=MAI8G7L3NZL8T5XK6Y9B261XK6Y9B&currency=USD&unit=toz';
+    final urlMetal = '$baseMetal$unit';
     
     try {
-      final response = await dio.get(url);
+      final response = await dio.get(urlMetal);
 
       // التحقق من الاستجابة
       if (response.statusCode == 200) {

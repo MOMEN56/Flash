@@ -1,6 +1,6 @@
 import 'package:flash/constants.dart';
 import 'package:flash/presentation/widgets/currency_search_widget.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // Ensure this is imported
 import 'package:flash/presentation/widgets/error_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/data/web_services/crypto_web_service.dart';
@@ -30,7 +30,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
   Map<String, bool> favoriteCryptos = {};
 
   int currentIndex = 0;
-  CryptoModel? selectedCrypto;  // تأكد من تعريف selectedCrypto هنا
+  CryptoModel? selectedCrypto;  // Make sure selectedCrypto is defined
   List<CryptoModel> cryptos = [];
 
   Future<void> fetchCryptos() async {
@@ -99,7 +99,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                 onBackPressed: _stopSearching,
               ),
             )
-          : CustomAppBar(onSearchPressed: _startSearch,showBackButton: false, ),
+          : CustomAppBar(onSearchPressed: _startSearch, showBackButton: false),
       body: errorMessage.isNotEmpty
           ? ErrorMessageWidget(errorMessage: errorMessage)
           : cryptos.isEmpty
@@ -123,7 +123,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                           widget.onCryptoSelected!(crypto);
                         }
 
-                        // تأكد من أن selectedCrypto ليس null قبل التنقل
+                        // Ensure selectedCrypto is not null before navigating
                         if (selectedCrypto != null) {
                           Navigator.push(
                             context,
@@ -221,7 +221,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                     );
                   },
                 ),
-                
+// Your existing code...
     );
   }
 }

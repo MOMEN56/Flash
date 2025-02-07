@@ -1,6 +1,7 @@
 import 'package:flash/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onSearchPressed;
@@ -12,7 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.onSearchPressed,
     this.showSearchIcon = true,
-    this.titlePaddingLeft = 80.0, // تعيين قيمة افتراضية 70
+    this.titlePaddingLeft = 80, // تعيين قيمة افتراضية 70
     this.showBackButton = true, // تعيين قيمة افتراضية true لعرض الأيقونة
   }) : preferredSize = Size.fromHeight(kToolbarHeight);
 

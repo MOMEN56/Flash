@@ -1,6 +1,7 @@
 import 'package:flash/presentation/screens/crypto_info_screen.dart';
 import 'package:flash/presentation/screens/crypto_rates_screen.dart';
 import 'package:flash/presentation/screens/currencies_rates_screen.dart';
+import 'package:flash/presentation/screens/metal_rates_screen.dart';
 import 'package:flash/presentation/screens/no_connection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/presentation/screens/home_screen.dart';
@@ -18,6 +19,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => NoConnectionScreen());
       case '/CurrenciesRatesScreen':
        return MaterialPageRoute(builder: (_) => CurrenciesRatesScreen());
+      case '/MetalRatesScreen':
+       return MaterialPageRoute(builder: (_) => MetalRatesScreen());
       case '/CryptoRatesScreen':
        return MaterialPageRoute(builder: (_) => CryptoRatesScreen());
       case '/CryptoInfoScreen':
