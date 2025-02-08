@@ -8,7 +8,7 @@ import 'package:vibration/vibration.dart';
 
 import 'package:flash/presentation/screens/currency_converter_screen.dart';
 import 'package:flash/presentation/widgets/error_message_widget.dart';
-import 'package:flash/presentation/widgets/currency_search_widget.dart';
+import 'package:flash/presentation/widgets/search_widget.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/constants.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';

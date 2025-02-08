@@ -1,5 +1,5 @@
 import 'package:flash/constants.dart';
-import 'package:flash/presentation/widgets/currency_search_widget.dart';
+import 'package:flash/presentation/widgets/search_widget.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // Ensure this is imported
 import 'package:flash/presentation/widgets/error_message_widget.dart';
 import 'package:flutter/material.dart';
