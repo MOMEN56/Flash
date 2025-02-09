@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NoConnectionScreen extends StatefulWidget {
+  const NoConnectionScreen({super.key});
+
   @override
   _NoConnectionScreenState createState() => _NoConnectionScreenState();
 }

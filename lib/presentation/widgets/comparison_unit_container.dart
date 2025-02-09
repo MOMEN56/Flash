@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-class UnitSelectionRow extends StatelessWidget {
+
+class ComparisonUnitContainer extends StatelessWidget {
   final String unit;
   final Function(String) onUnitSelected;
 
-  UnitSelectionRow({
+  const ComparisonUnitContainer({
+    super.key,
     required this.unit,
     required this.onUnitSelected,
   });
@@ -12,10 +14,10 @@ class UnitSelectionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, String> unitMapping = {
-      'Ounce': 'toz',
-      'Tonne': 'mt',
-      'Kilogram': 'kg',
       'Gram': 'g',
+      'Ounce': 'toz',
+      'Kilogram': 'kg',
+      'Tonne': 'mt',
     };
 
     return Row(
@@ -24,12 +26,14 @@ class UnitSelectionRow extends StatelessWidget {
         final isSelected = unit == unitMapping[unitName];
         return GestureDetector(
           onTap: () {
-            onUnitSelected(unitMapping[unitName]!);  // استدعاء دالة onUnitSelected
+            onUnitSelected(
+                unitMapping[unitName]!); // استدعاء دالة onUnitSelected
           },
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 4.0.h, horizontal: 8.0.h),
+            padding: EdgeInsets.symmetric( horizontal: 4.0.h),
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 16.0.h),
+              padding:
+                  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 10.0.h),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.blue : Colors.grey[300],
                 borderRadius: BorderRadius.circular(12),

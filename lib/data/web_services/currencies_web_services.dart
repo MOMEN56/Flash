@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flash/constants.dart';
 
 class CurrenciesWebService {
   final Dio dio;

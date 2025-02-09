@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class CurrencyFlag {
   final Dio dio;
-  Map<String, String?> _cachedFlags = {}; // كاش الصور
+  final Map<String, String?> _cachedFlags = {}; // كاش الصور
 
   CurrencyFlag({required this.dio});
 
@@ -34,5 +34,6 @@ class CurrencyFlag {
         }
       }
     }
+    return null;
   }
 }

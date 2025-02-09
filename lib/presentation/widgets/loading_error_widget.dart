@@ -5,10 +5,10 @@ class LoadingErrorWidget extends StatelessWidget {
   final String? errorMessage;
 
   const LoadingErrorWidget({
-    Key? key,
+    super.key,
     required this.isLoading,
     this.errorMessage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

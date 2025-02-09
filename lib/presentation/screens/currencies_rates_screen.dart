@@ -14,8 +14,6 @@ import 'package:flash/constants.dart';
 import 'package:flash/data/web_services/currencies_web_services.dart';
 import 'package:flash/data/web_services/currency_flag_web_services.dart';
 
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // تأكد من استيراد الودجت
-
 class CurrenciesRatesScreen extends StatefulWidget {
   const CurrenciesRatesScreen({super.key});
 
@@ -188,7 +186,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                       child: Container(
                         height: 72.5.h,
                         margin: EdgeInsets.symmetric(
-                            vertical: 8.h, horizontal: 12.w),
+                            vertical: 8.h, horizontal: 12.h),
                         decoration: BoxDecoration(
                           color: Color(0xFF5d6d7e),
                           borderRadius: BorderRadius.circular(16),
@@ -199,52 +197,58 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                             ),
                           ],
                         ),
-                        child: Center(
-                          child: ListTile(
-                            contentPadding: EdgeInsets.only(left: 8.h),
-                            leading: currencyFlags.containsKey(currency)
-                                ? CachedNetworkImage(
-                                    imageUrl: currencyFlags[currency]!,
-                                    cacheManager: _cacheManager,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle, // شكل دائري
-                                        border: Border.all(
-                                          color:
-                                              Colors.white, // لون الحدود (أبيض)
-                                          width: 2.0, // سمك الحدود
-                                        ),
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: 28.h, // نصف القطر
-                                        backgroundImage:
-                                            imageProvider, // الصورة
-                                      ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .spaceBetween, // توزيع المسافة بين المجموعتين فقط
+                            children: [
+                              // المجموعة الأولى: اسم العملة والعلم
+                              Row(
+                                children: [
+                                  currencyFlags.containsKey(currency)
+                                      ? CachedNetworkImage(
+                                          imageUrl: currencyFlags[currency]!,
+                                          cacheManager: _cacheManager,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: Colors.white,
+                                                width: 2.0,
+                                              ),
+                                            ),
+                                            child: CircleAvatar(
+                                              radius: 28.h,
+                                              backgroundImage: imageProvider,
+                                            ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        )
+                                      : const Icon(Icons.flag,color: Colors.grey,),
+                                  SizedBox(width: 8.h),
+                                  Text(
+                                    currency,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  )
-                                : const Icon(Icons.flag),
-                            title: Row(
-                              children: [
-                                Text(
-                                  currency,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.sp,
-                                    fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                                if (currency != comparisonCurrency) ...[ 
-                                  Spacer(flex: 10),
+                                ],
+                              ),
+                              Row(
+                                children: [
                                   Text(
                                     rate.toString(),
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 18.sp,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -274,38 +278,9 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                       _onConvertPressed(currency, rate);
                                     },
                                   ),
-                                  Spacer(),
-                                ] else ...[
-                                  Spacer(flex: 1),
-                                  Text(
-                                    'Comparison Currency',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.favorite,
-                                      size: 20.w,
-                                      color:
-                                          favoriteCurrencies[currency] ?? false
-                                              ? Colors.red
-                                              : Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        favoriteCurrencies[currency] =
-                                            !(favoriteCurrencies[currency] ??
-                                                false);
-                                      });
-                                    },
-                                  ),
-                                  Spacer(flex: 1),
                                 ],
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

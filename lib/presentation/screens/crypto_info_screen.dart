@@ -10,11 +10,11 @@ import 'package:flash/presentation/screens/currencies_rates_screen.dart';
 class CryptoInfoScreen extends StatelessWidget {
   final CryptoModel crypto;
 
-  const CryptoInfoScreen({Key? key, required this.crypto}) : super(key: key);
+  const CryptoInfoScreen({super.key, required this.crypto});
 
   @override
   Widget build(BuildContext context) {
-      int _currentIndex = 0; // Track bottom bar index
+      int currentIndex = 0; // Track bottom bar index
 
     return Scaffold(
       appBar:
@@ -76,14 +76,14 @@ class CryptoInfoScreen extends StatelessWidget {
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                   label: 'Circulating Supply',
-                  value: '${crypto.circulatingSupply.toStringAsFixed(2)}'),
+                  value: crypto.circulatingSupply.toStringAsFixed(2)),
               TextInfoTextInCryptoInfoScreenWidget(
                   label: 'Total Supply',
-                  value: '${crypto.totalSupply.toStringAsFixed(2)}'),
+                  value: crypto.totalSupply.toStringAsFixed(2)),
               if (crypto.maxSupply != null)
                 TextInfoTextInCryptoInfoScreenWidget(
                     label: 'Max Supply',
-                    value: '${crypto.maxSupply!.toStringAsFixed(2)}'),
+                    value: crypto.maxSupply!.toStringAsFixed(2)),
               TextInfoTextInCryptoInfoScreenWidget(
                   label: 'Highest Price Overall',
                   value: '${crypto.ath.toStringAsFixed(2)} \$'),

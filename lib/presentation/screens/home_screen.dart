@@ -7,7 +7,7 @@ import 'package:flash/presentation/screens/no_connection_screen.dart';
 import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();

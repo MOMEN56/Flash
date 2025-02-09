@@ -11,11 +11,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final Function(int) onScreenChange; // تابع لإخبار الشاشة بالتغيير
 
   const CustomBottomNavigationBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
     required this.onScreenChange, // إضافة تابع التغيير
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -26,7 +26,7 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
       emit(CurrenciesLoading());
       final url = "$baseCurrencyUrl$baseCurrency";
       final rates =
-          (await currenciesService.fetchRates(url)) as Map<String, dynamic>;
+          (await currenciesService.fetchRates(url));
 
       final sanitizedRates = rates.map(
         (key, value) => MapEntry(key, (value as num).toDouble()),

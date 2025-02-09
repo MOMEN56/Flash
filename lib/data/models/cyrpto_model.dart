@@ -72,7 +72,7 @@ class CryptoModel {
       marketCapChangePercentage24h: json['market_cap_change_percentage_24h'].toDouble(),
       circulatingSupply: json['circulating_supply'].toDouble(),
       totalSupply: json['total_supply'].toDouble(),
-      maxSupply: json['max_supply'] != null ? json['max_supply'].toDouble() : null,
+      maxSupply: json['max_supply']?.toDouble(),
       ath: json['ath'].toDouble(),
       athChangePercentage: json['ath_change_percentage'].toDouble(),
       athDate: json['ath_date'],

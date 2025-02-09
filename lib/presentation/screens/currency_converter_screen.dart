@@ -21,7 +21,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   bool isSwapped = false;
   final TextEditingController _amountController = TextEditingController();
   double result = 1.0;
-  int _currentIndex = 0; // Track bottom bar index
+  final int _currentIndex = 0; // Track bottom bar index
 
   @override
   void initState() {
@@ -120,7 +120,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                       ),
                     )
                   : Text(
-                      '${result.toStringAsFixed(2).length > 12 ? result.toStringAsFixed(2).substring(0, 10) + "..." : result.toStringAsFixed(2)}',
+                      result.toStringAsFixed(2).length > 12 ? "${result.toStringAsFixed(2).substring(0, 10)}..." : result.toStringAsFixed(2),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: result.toStringAsFixed(2).length > 7
@@ -161,7 +161,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                       ),
                     )
                   : Text(
-                      '${result.toStringAsFixed(2).length > 12 ? result.toStringAsFixed(2).substring(0, 10) + "..." : result.toStringAsFixed(2)}',
+                      result.toStringAsFixed(2).length > 12 ? "${result.toStringAsFixed(2).substring(0, 10)}..." : result.toStringAsFixed(2),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: result.toStringAsFixed(2).length > 7

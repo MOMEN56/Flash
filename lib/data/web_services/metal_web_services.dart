@@ -6,9 +6,9 @@ class WebService {
   final Dio dio = Dio();
 
   // الدالة لجلب بيانات المعادن من الـ API
-  Future<MetalModel> fetchMetalPrices() async {
-    final urlMetal = '$baseMetal$unit';
-    
+  Future<MetalModel> fetchMetalPrices(String unit) async {
+    final urlMetal = '$baseMetal$unit';  // دمج baseMetal و unit في الرابط
+
     try {
       final response = await dio.get(urlMetal);
 

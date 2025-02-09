@@ -7,11 +7,11 @@ class TextInfoTextInCryptoInfoScreenWidget extends StatelessWidget {
   final double fontSize;
 
   const TextInfoTextInCryptoInfoScreenWidget({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     this.fontSize = 15.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class TextInfoTextInCryptoInfoScreenWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              '$value',
+              value,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: fontSize.sp,

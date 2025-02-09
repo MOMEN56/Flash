@@ -1,12 +1,11 @@
 import 'package:flash/constants.dart';
 import 'package:flash/presentation/widgets/search_widget.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // Ensure this is imported
+// Ensure this is imported
 import 'package:flash/presentation/widgets/error_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/data/web_services/crypto_web_service.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vibration/vibration.dart';
 import 'crypto_info_screen.dart';
