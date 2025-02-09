@@ -1,4 +1,4 @@
-const int kPrimaryColor = 0xff1c0518;
+const int kPrimaryColor = 0xff100B20  ;
  String comparisonCurrency = "USD";
  String unit = "toz";
  String baseCurrencyUrl =

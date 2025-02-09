@@ -1,13 +1,12 @@
 // currency_converter_model.dart
 
 class CurrencyConverterModel {
-  final String comparisonCurrency;
-  final String selectedCurrency;
-  final double comparisonCurrencyRate;
-  final double selectedCurrencyRate;
-  final String comparisonCurrencyFlagUrl;
-  final String selectedCurrencyFlagUrl;
-
+   String comparisonCurrency;
+   String selectedCurrency;
+   double comparisonCurrencyRate;
+   double selectedCurrencyRate;
+   String comparisonCurrencyFlagUrl;
+   String selectedCurrencyFlagUrl;
   CurrencyConverterModel({
     required this.comparisonCurrency,
     required this.selectedCurrency,

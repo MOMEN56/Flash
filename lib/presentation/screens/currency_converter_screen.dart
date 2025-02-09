@@ -21,17 +21,24 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   bool isSwapped = false;
   final TextEditingController _amountController = TextEditingController();
   double result = 1.0;
-  final int _currentIndex = 0; // Track bottom bar index
+  double temp = 0.0; // Temporary variable to store the swapped value
 
-  @override
-  void initState() {
-    super.initState();
+  void _swapCurrencies() {
+    setState(() {
+      // Swap only the rates using temp variable
+      // Toggle the swap flag
+      isSwapped = !isSwapped;
+      result = 0.0;
+      _amountController.clear();
+    });
   }
 
   void _calculateResult() {
     double enteredAmount = double.tryParse(_amountController.text) ?? 0.0;
     setState(() {
-      result = enteredAmount * widget.model.selectedCurrencyRate;
+      result = isSwapped
+          ? enteredAmount * widget.model.comparisonCurrencyRate/ widget.model.selectedCurrencyRate
+          : enteredAmount * widget.model.selectedCurrencyRate;
     });
   }
 
@@ -60,6 +67,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            
             CachedNetworkImage(
               imageUrl: flagUrl,
               imageBuilder: (context, imageProvider) => Container(
@@ -120,7 +128,9 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                       ),
                     )
                   : Text(
-                      result.toStringAsFixed(2).length > 12 ? "${result.toStringAsFixed(2).substring(0, 10)}..." : result.toStringAsFixed(2),
+                      result.toStringAsFixed(2).length > 12
+                          ? "${result.toStringAsFixed(2).substring(0, 10)}..."
+                          : result.toStringAsFixed(2),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: result.toStringAsFixed(2).length > 7
@@ -161,7 +171,9 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                       ),
                     )
                   : Text(
-                      result.toStringAsFixed(2).length > 12 ? "${result.toStringAsFixed(2).substring(0, 10)}..." : result.toStringAsFixed(2),
+                      result.toStringAsFixed(2).length > 12
+                          ? "${result.toStringAsFixed(2).substring(0, 10)}..."
+                          : result.toStringAsFixed(2),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: result.toStringAsFixed(2).length > 7
@@ -188,7 +200,8 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 30.h),
       body: Padding(
-        padding: EdgeInsets.only(right: 12.h,left: 12.h,bottom: 50,top: 10.h),
+        padding:
+            EdgeInsets.only(right: 12.h, left: 12.h, bottom: 50, top: 10.h),
         child: Stack(
           children: [
             AnimatedPositioned(
@@ -211,11 +224,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                   size: 50.w,
                   color: Colors.white,
                 ),
-                onPressed: () {
-                  setState(() {
-                    isSwapped = !isSwapped;
-                  });
-                },
+                onPressed: _swapCurrencies, // Call the swap method
               ),
             ),
             AnimatedPositioned(
