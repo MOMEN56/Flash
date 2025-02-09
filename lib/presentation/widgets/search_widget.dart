@@ -35,7 +35,7 @@ class CurrencySearchWidget extends StatelessWidget {
           hintText: searchHint, // Use the provided hint here
           hintStyle: TextStyle(
             color: Colors.white70,
-            fontSize: 18.sp,
+            fontSize: 14.sp,
           ),
           border: InputBorder.none,
         ),

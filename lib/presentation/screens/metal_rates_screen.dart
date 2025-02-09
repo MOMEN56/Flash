@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flash/constants.dart';
 import 'package:flash/data/models/matal_model.dart';
 import 'package:flash/data/web_services/metal_web_services.dart';
+import 'package:flash/presentation/widgets/comparison_unit_container.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/presentation/widgets/error_message_widget.dart';
-import 'package:flash/presentation/widgets/comparison_unit_container.dart';
+import 'package:flash/presentation/widgets/search_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flash/constants.dart'; // Ensure the constants file is imported
 
 class MetalRatesScreen extends StatefulWidget {
   @override
@@ -24,7 +25,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
   @override
   void initState() {
     super.initState();
-    futureMetalPrices = WebService().fetchMetalPrices(unit); // نمرر الوحدة هنا
+    futureMetalPrices = WebService().fetchMetalPrices(unit); // Pass unit here
   }
 
   void addSearchedForMetalToSearchedList(String searchedMetal) {
@@ -61,11 +62,21 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        onSearchPressed: _startSearch,
-        showSearchIcon: true,
-        showBackButton: false,
-      ),
+      appBar: _isSearching
+          ? PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight), // Set height of the AppBar
+              child: CurrencySearchWidget(
+                searchTextController: _searchTextController,
+                addSearchedForCurrencyToSearchedList: addSearchedForMetalToSearchedList,
+                onBackPressed: _stopSearching,
+                searchHint: 'Search for a metal...',
+              ),
+            )
+          : CustomAppBar(
+              onSearchPressed: _startSearch,
+              showSearchIcon: true,
+              showBackButton: false,
+            ),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -77,9 +88,8 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                   unit: unit,
                   onUnitSelected: (selectedUnit) {
                     setState(() {
-                      unit = selectedUnit; // تغيير الوحدة
-                      futureMetalPrices = WebService().fetchMetalPrices(
-                          unit); // تحديث الطلب مع الوحدة الجديدة
+                      unit = selectedUnit; // Change the unit
+                      futureMetalPrices = WebService().fetchMetalPrices(unit); // Update the request with new unit
                     });
                   },
                 ),
@@ -93,8 +103,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return ErrorMessageWidget(
-                  errorMessage: 'Error: ${snapshot.error}');
+              return ErrorMessageWidget(errorMessage: 'Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               final prices = snapshot.data!.getMetalPrices();
               metalList = prices.keys.toList();
@@ -116,17 +125,14 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                     onTap: () {},
                     child: Container(
                       height: 72.5.h,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.h),
+                      margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.h),
                       decoration: BoxDecoration(
                         color: const Color(0xFF5d6d7e),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .spaceBetween, // توزيع المسافة بين المجموعات فقط
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // المجموعة الأولى: اسم المعدن والعلم
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12.h),
                             child: Row(
@@ -139,21 +145,18 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(
-                                    width:
-                                        8.h), // المسافة بين الصورة واسم المعدن
+                                SizedBox(width: 8.h),
                                 Text(
                                   metal,
                                   style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold),
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-
-                          // المجموعة الثانية: السعر وأيقونة المفضلة
                           Row(
                             children: [
                               Text(
@@ -163,7 +166,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                                   fontSize: (price != null &&
                                           price!.toStringAsFixed(2).length > 7)
                                       ? 14.sp
-                                      : 16.sp, // Ensure price is not null before checking length
+                                      : 16.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
