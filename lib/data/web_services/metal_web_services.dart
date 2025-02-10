@@ -33,7 +33,7 @@ class WebService {
         throw Exception('Failed to load metal prices');
       }
     } catch (e) {
-      throw Exception('Error fetching data: $e');
+      throw Exception('Error fetching data: $e',);
     }
   }
 }

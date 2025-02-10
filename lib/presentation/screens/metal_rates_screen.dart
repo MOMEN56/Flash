@@ -64,10 +64,12 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
     return Scaffold(
       appBar: _isSearching
           ? PreferredSize(
-              preferredSize: Size.fromHeight(kToolbarHeight), // Set height of the AppBar
+              preferredSize:
+                  Size.fromHeight(kToolbarHeight), // Set height of the AppBar
               child: CurrencySearchWidget(
                 searchTextController: _searchTextController,
-                addSearchedForCurrencyToSearchedList: addSearchedForMetalToSearchedList,
+                addSearchedForCurrencyToSearchedList:
+                    addSearchedForMetalToSearchedList,
                 onBackPressed: _stopSearching,
                 searchHint: 'Search for a metal...',
               ),
@@ -83,13 +85,14 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding:
-                    EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 12.0.h),
+                    EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 24.0.h),
                 child: ComparisonUnitContainer(
                   unit: unit,
                   onUnitSelected: (selectedUnit) {
                     setState(() {
                       unit = selectedUnit; // Change the unit
-                      futureMetalPrices = WebService().fetchMetalPrices(unit); // Update the request with new unit
+                      futureMetalPrices = WebService().fetchMetalPrices(
+                          unit); // Update the request with new unit
                     });
                   },
                 ),
@@ -103,7 +106,8 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return ErrorMessageWidget(errorMessage: 'Error: ${snapshot.error}');
+              return ErrorMessageWidget(
+                  errorMessage: 'Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               final prices = snapshot.data!.getMetalPrices();
               metalList = prices.keys.toList();
@@ -125,7 +129,8 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                     onTap: () {},
                     child: Container(
                       height: 72.5.h,
-                      margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.h),
+                      margin:
+                          EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.h),
                       decoration: BoxDecoration(
                         color: const Color(0xFF5d6d7e),
                         borderRadius: BorderRadius.circular(16),
@@ -138,11 +143,28 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                             child: Row(
                               children: [
                                 ClipOval(
-                                  child: Image.asset(
-                                    'assets/images/images.jpg',
-                                    width: 40.h,
-                                    height: 40.h,
-                                    fit: BoxFit.cover,
+                                  child: Container(
+                                    width: 48.h, // Adjusted width and height
+                                    height: 48.h,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors
+                                            .white, // Set border color to white
+                                        width: 2.0, // Set border width
+                                      ),
+                                      shape: BoxShape
+                                          .circle, // Ensure the border follows the circular shape
+                                    ),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'assets/images/images.jpg',
+                                        width: 40
+                                            .h, // Image width (slightly smaller than the container to show the border)
+                                        height: 40
+                                            .h, // Image height (same as width)
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 8.h),
@@ -159,31 +181,20 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                           ),
                           Row(
                             children: [
-                              Text(
-                                '${price?.toStringAsFixed(2)}\$',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: (price != null &&
-                                          price!.toStringAsFixed(2).length > 7)
-                                      ? 14.sp
-                                      : 16.sp,
-                                  fontWeight: FontWeight.bold,
+                              Padding(
+                                padding: EdgeInsets.only(right: 12.h),
+                                child: Text(
+                                  '${price?.toStringAsFixed(2)}\$',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: (price != null &&
+                                            price!.toStringAsFixed(2).length >
+                                                7)
+                                        ? 14.sp
+                                        : 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.favorite,
-                                  size: 22.w,
-                                  color: favoriteMetals[metal] ?? false
-                                      ? Colors.red
-                                      : Colors.grey,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    favoriteMetals[metal] =
-                                        !(favoriteMetals[metal] ?? false);
-                                  });
-                                },
                               ),
                             ],
                           ),

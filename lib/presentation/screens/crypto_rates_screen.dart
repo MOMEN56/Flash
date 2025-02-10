@@ -195,23 +195,6 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.favorite,
-                                      size: 18.w,
-                                      color:
-                                          favoriteCryptos[crypto.name] ?? false
-                                              ? Colors.red
-                                              : Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        favoriteCryptos[crypto.name] =
-                                            !(favoriteCryptos[crypto.name] ??
-                                                false);
-                                      });
-                                    },
-                                  ),
                                 ],
                               ),
                             ),

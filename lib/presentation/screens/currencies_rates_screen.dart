@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:vibration/vibration.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flash/presentation/screens/currency_converter_screen.dart';
 import 'package:flash/presentation/widgets/error_message_widget.dart';
@@ -22,6 +23,7 @@ class CurrenciesRatesScreen extends StatefulWidget {
 }
 
 class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
+  String comparisonCurrency = "USD"; // العملة الافتراضية
   int currentIndex = 0;
   Map<String, dynamic>? rates;
   bool isLoading = true;
@@ -31,24 +33,40 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   final List<String> currencyList = [];
   final List<String> filteredCurrencyList = [];
   final ScrollController _scrollController = ScrollController();
-  String url = "$baseCurrencyUrl$comparisonCurrency";
   Map<String, bool> favoriteCurrencies = {};
   final CurrenciesWebService _currenciesWebService =
       CurrenciesWebService(dio: Dio());
   final CurrencyFlag _currencyFlag = CurrencyFlag(dio: Dio());
   final CacheManager _cacheManager = CacheManager(Config('customCacheKey',
-      stalePeriod: Duration(days: 30), maxNrOfCacheObjects: 180));
+      stalePeriod: Duration(days: 30), maxNrOfCacheObjects: 200));
 
-  // إضافة متغير لتخزين روابط الأعلام
   Map<String, String?> currencyFlags = {};
 
-  @override
-  void initState() {
-    super.initState();
-    fetchRates();
+@override
+void initState() {
+  super.initState();
+  _initializeCurrencies();
+}
+
+Future<void> _initializeCurrencies() async {
+  await _loadDefaultCurrency();
+  fetchRates();
+}
+
+  Future<void> _loadDefaultCurrency() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      comparisonCurrency = prefs.getString('comparisonCurrency') ?? "USD";
+    });
+  }
+
+  Future<void> _saveComparisonCurrency(String currency) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('comparisonCurrency', currency);
   }
 
   Future<void> fetchRates() async {
+    final url = "$baseCurrencyUrl$comparisonCurrency";
     try {
       final fetchedRates = await _currenciesWebService.fetchRates(url);
       setState(() {
@@ -58,8 +76,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
         currencyList.addAll(rates!.keys);
         filteredCurrencyList.clear();
         filteredCurrencyList.addAll(currencyList);
-
-        // جلب روابط الأعلام وتخزينها
         _loadFlags();
       });
     } catch (e) {
@@ -70,7 +86,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     }
   }
 
-  // دالة لجلب روابط الأعلام
   Future<void> _loadFlags() async {
     for (var currency in currencyList) {
       final flagUrl = await _currencyFlag.fetchFlagByCurrency(currency);
@@ -119,10 +134,11 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
     setState(() {
       _isSearching = false;
       comparisonCurrency = currency;
-      url = "$baseCurrencyUrl$comparisonCurrency";
       filteredCurrencyList.remove(currency);
       filteredCurrencyList.insert(0, currency);
     });
+
+    _saveComparisonCurrency(currency); // تخزين العملة المختارة
 
     _scrollController.animateTo(
       0,
@@ -134,7 +150,6 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   }
 
   void _onConvertPressed(String currency, double rate) {
-    // Create an instance of CurrencyConverterModel
     CurrencyConverterModel model = CurrencyConverterModel(
       comparisonCurrency: comparisonCurrency,
       selectedCurrency: currency,
@@ -144,12 +159,11 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
       selectedCurrencyFlagUrl: currencyFlags[currency] ?? "",
     );
 
-    // Pass the model to CurrencyConverterScreen
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CurrencyConverterScreen(
-          model: model, // Pass the model here
+          model: model,
         ),
       ),
     );
@@ -158,126 +172,107 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _isSearching
-            ? PreferredSize(
-                preferredSize: Size.fromHeight(kToolbarHeight),
-                child: CurrencySearchWidget(
-                  searchHint: "Search for a currency...",
-                  searchTextController: _searchTextController,
-                  addSearchedForCurrencyToSearchedList:
-                      addSearchedForCurrencyToSearchedList,
-                  onBackPressed: _stopSearching,
-                ),
-              )
-            : CustomAppBar(
-                onSearchPressed: _startSearch, showBackButton: false),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : errorMessage.isNotEmpty
-                ? ErrorMessageWidget(errorMessage: errorMessage)
-                : ListView.builder(
-                    controller: _scrollController,
-                    itemCount: filteredCurrencyList.length,
-                    itemBuilder: (context, index) {
-                      final currency = filteredCurrencyList[index];
-                      final rate = rates![currency];
+      appBar: _isSearching
+          ? PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight),
+              child: CurrencySearchWidget(
+                searchHint: "Search for a currency...",
+                searchTextController: _searchTextController,
+                addSearchedForCurrencyToSearchedList:
+                    addSearchedForCurrencyToSearchedList,
+                onBackPressed: _stopSearching,
+              ),
+            )
+          : CustomAppBar(onSearchPressed: _startSearch, showBackButton: false),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+              ? ErrorMessageWidget(errorMessage: errorMessage)
+              : ListView.builder(
+                  controller: _scrollController,
+                  itemCount: filteredCurrencyList.length,
+                  itemBuilder: (context, index) {
+                    final currency = filteredCurrencyList[index];
+                    final rate = rates![currency];
 
-                      return GestureDetector(
-                        onTap: () => _onCurrencyTap(currency),
-                        child: Container(
-                          height: 72.5.h,
-                          margin: EdgeInsets.symmetric(
-                              vertical: 8.h, horizontal: 12.h),
-                          decoration: BoxDecoration(
-                            color: Color(0xFF5d6d7e),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: const [
-                              BoxShadow(
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.h),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // المجموعة الأولى: اسم العملة والعلم
-                                Row(
-                                  children: [
-                                    currencyFlags.containsKey(currency)
-                                        ? CachedNetworkImage(
-                                            imageUrl: currencyFlags[currency]!,
-                                            cacheManager: _cacheManager,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 2.0,
-                                                ),
-                                              ),
-                                              child: CircleAvatar(
-                                                radius: 28.h,
-                                                backgroundImage: imageProvider,
+                    return GestureDetector(
+                      onTap: () => _onCurrencyTap(currency),
+                      child: Container(
+                        height: 72.5.h,
+                        margin: EdgeInsets.symmetric(
+                            vertical: 8.h, horizontal: 12.h),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF5d6d7e),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  currencyFlags.containsKey(currency)
+                                      ? CachedNetworkImage(
+                                          imageUrl: currencyFlags[currency]!,
+                                          cacheManager: _cacheManager,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: Colors.white,
+                                                width: 2.0,
                                               ),
                                             ),
-                                            placeholder: (context, url) =>
-                                                const CircularProgressIndicator(),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(Icons.error),
-                                          )
-                                        : const Icon(
-                                            Icons.flag,
-                                            color: Colors.grey,
+                                            child: CircleAvatar(
+                                              radius: 28.h,
+                                              backgroundImage: imageProvider,
+                                            ),
                                           ),
-                                    SizedBox(width: 8.h),
-                                    Text(
-                                      currency,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                          errorWidget:
+                                              (context, url, error) =>
+                                                  const Icon(Icons.error),
+                                        )
+                                      : const Icon(
+                                          Icons.flag,
+                                          color: Colors.grey,
+                                        ),
+                                  SizedBox(width: 8.h),
+                                  Text(
+                                    currency,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    // إذا كانت العملة هي عملة المقارنة، عرض "comparison currency"
-                                    Text(
-                                      currency == comparisonCurrency
-                                          ? '    comparison currency'
-                                          : rate.toString(),
-                                      style: TextStyle(
-                                        color: currency == comparisonCurrency?Colors.grey:Colors.black,
-                                        fontSize: currency == comparisonCurrency
-                                            ? 8.sp
-                                            : 16.sp, // تغيير الحجم إذا كانت العملة هي عملة المقارنة
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    currency == comparisonCurrency
+                                        ? '    comparison currency'
+                                        : rate.toString(),
+                                    style: TextStyle(
+                                      color: currency == comparisonCurrency
+                                          ? Colors.grey
+                                          : Colors.black,
+                                      fontSize: currency == comparisonCurrency
+                                          ? 12.sp
+                                          : 16.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.favorite,
-                                        size: 20.w,
-                                        color: favoriteCurrencies[currency] ??
-                                                false
-                                            ? Colors.red
-                                            : Colors.grey,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          favoriteCurrencies[currency] =
-                                              !(favoriteCurrencies[currency] ??
-                                                  false);
-                                        });
-                                      },
-                                    ),
+                                  ),
+                                  if (currency != comparisonCurrency)
                                     IconButton(
                                       icon: Icon(
                                         Icons.currency_exchange,
@@ -287,14 +282,15 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                         _onConvertPressed(currency, rate);
                                       },
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                  ));
+                      ),
+                    );
+                  },
+                ),
+    );
   }
 }

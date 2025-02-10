@@ -23,6 +23,8 @@ class AppRouter {
        return MaterialPageRoute(builder: (_) => MetalRatesScreen());
       case '/CryptoRatesScreen':
        return MaterialPageRoute(builder: (_) => CryptoRatesScreen());
+      case '/FavoriteScreen':
+       return MaterialPageRoute(builder: (_) => CryptoRatesScreen());
       case '/CryptoInfoScreen':
         if (settings.arguments is CryptoModel) {
           final crypto = settings.arguments as CryptoModel;
