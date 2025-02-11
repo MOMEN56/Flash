@@ -1,3 +1,4 @@
+import 'package:flash/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // إضافة AppRouter
@@ -49,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
               opacity: _opacityText,
               duration: const Duration(seconds: 1),
               child: Text(
-                "Flash",
+                S.of(context).AppBarTitle,
                 style: TextStyle(
                   fontFamily: 'PassionOne',
                   color: Colors.white,

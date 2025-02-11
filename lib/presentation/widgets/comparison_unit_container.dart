@@ -1,3 +1,4 @@
+import 'package:flash/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,10 +15,10 @@ class ComparisonUnitContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, String> unitMapping = {
-      'Gram': 'g',
-      'Ounce': 'toz',
-      'Kilogram': 'kg',
-      'Tonne': 'mt',
+      S.of(context).gram: 'g',
+      S.of(context).Ounce: 'toz',
+      S.of(context).kilo: 'kg',
+      S.of(context).tonne: 'mt',
     };
 
     return Row(

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flash/crypto_translations.dart';
 import 'package:flash/data/models/currency_converter_model.dart';
+import 'package:flash/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -42,16 +44,16 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
 
   Map<String, String?> currencyFlags = {};
 
-@override
-void initState() {
-  super.initState();
-  _initializeCurrencies();
-}
+  @override
+  void initState() {
+    super.initState();
+    _initializeCurrencies();
+  }
 
-Future<void> _initializeCurrencies() async {
-  await _loadDefaultCurrency();
-  fetchRates();
-}
+  Future<void> _initializeCurrencies() async {
+    await _loadDefaultCurrency();
+    fetchRates();
+  }
 
   Future<void> _loadDefaultCurrency() async {
     final prefs = await SharedPreferences.getInstance();
@@ -108,7 +110,8 @@ Future<void> _initializeCurrencies() async {
                 .startsWith(searchedCurrency.toLowerCase()))
             .toList());
       }
-      errorMessage = filteredCurrencyList.isEmpty ? 'No currencies found' : '';
+      errorMessage =
+          filteredCurrencyList.isEmpty ? S.of(context).NoCurrenciesFound : '';
     });
   }
 
@@ -176,14 +179,14 @@ Future<void> _initializeCurrencies() async {
           ? PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
               child: CurrencySearchWidget(
-                searchHint: "Search for a currency...",
+                searchHint: S.of(context).SearchForACurrency,
                 searchTextController: _searchTextController,
                 addSearchedForCurrencyToSearchedList:
                     addSearchedForCurrencyToSearchedList,
                 onBackPressed: _stopSearching,
               ),
             )
-          : CustomAppBar(onSearchPressed: _startSearch, showBackButton: false),
+          : CustomAppBar(onSearchPressed: _startSearch, showBackButton: false, rightPadding: 100,),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
@@ -194,6 +197,7 @@ Future<void> _initializeCurrencies() async {
                   itemBuilder: (context, index) {
                     final currency = filteredCurrencyList[index];
                     final rate = rates![currency];
+                    final translatedCurrency = getTranslatedCurrencyName(currency, Localizations.localeOf(context));
 
                     return GestureDetector(
                       onTap: () => _onCurrencyTap(currency),
@@ -237,9 +241,8 @@ Future<void> _initializeCurrencies() async {
                                               backgroundImage: imageProvider,
                                             ),
                                           ),
-                                          errorWidget:
-                                              (context, url, error) =>
-                                                  const Icon(Icons.error),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
                                         )
                                       : const Icon(
                                           Icons.flag,
@@ -247,7 +250,7 @@ Future<void> _initializeCurrencies() async {
                                         ),
                                   SizedBox(width: 8.h),
                                   Text(
-                                    currency,
+                                    translatedCurrency,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 16.sp,
@@ -260,14 +263,14 @@ Future<void> _initializeCurrencies() async {
                                 children: [
                                   Text(
                                     currency == comparisonCurrency
-                                        ? '    comparison currency'
+                                        ?  S.of(context).comparison_currency
                                         : rate.toString(),
                                     style: TextStyle(
                                       color: currency == comparisonCurrency
                                           ? Colors.grey
                                           : Colors.black,
                                       fontSize: currency == comparisonCurrency
-                                          ? 12.sp
+                                          ? 16.sp
                                           : 16.sp,
                                       fontWeight: FontWeight.bold,
                                     ),

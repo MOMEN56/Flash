@@ -26,13 +26,17 @@ dependencies:
   vibration: ^3.1.2
   device_info_plus: ^11.2.2
   shared_preferences: ^2.5.2
+  flutter_localization: ^0.3.1
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
-       - assets/images/
+    - assets/images/
 
   fonts:
     - family: PassionOne
       fonts:
         - asset: assets/fonts/PassionOne-Bold.ttf
+flutter_intl:
+  enabled: true

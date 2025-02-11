@@ -1,4 +1,6 @@
+import 'package:flash/crypto_translations.dart';
 import 'package:flash/data/models/currency_converter_model.dart';
+import 'package:flash/generated/l10n.dart';
 import 'package:flash/presentation/screens/crypto_rates_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,151 +44,152 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
     });
   }
 
-  Widget buildCurrencyContainer(
-    String currencyName,
-    double rate,
-    String flagUrl,
-    bool isComparisonCurrency,
-    double heightRatio,
-  ) {
-    return Container(
-      height: 200.h * heightRatio,
-      margin: EdgeInsets.symmetric(vertical: 15.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFF5d6d7e),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 6,
-            offset: Offset(0, 2),
+Widget buildCurrencyContainer(
+  String currencyCode,
+  double rate,
+  String flagUrl,
+  bool isComparisonCurrency,
+  double heightRatio,
+) {
+  String translatedCurrencyName = getTranslatedCurrencyName(currencyCode, Localizations.localeOf(context));
+
+  return Container(
+    height: 200.h * heightRatio,
+    margin: EdgeInsets.symmetric(vertical: 15.h),
+    decoration: BoxDecoration(
+      color: const Color(0xFF5d6d7e),
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: const [
+        BoxShadow(
+          blurRadius: 6,
+          offset: Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CachedNetworkImage(
+            imageUrl: flagUrl,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 3.0,
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 40.h,
+                backgroundImage: imageProvider,
+              ),
+            ),
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
+          SizedBox(width: 8.w),
+          Text(
+            translatedCurrencyName,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: translatedCurrencyName.length > 10 ? 14.sp : 25.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Spacer(),
+          if (isComparisonCurrency)
+            !isSwapped
+                ? SizedBox(
+                    width: 120.h,
+                    child: TextField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: S.of(context).Amount,
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: const Color(0xFF5d6d7e),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: Colors.black,
+                      ),
+                      onChanged: (value) {
+                        _calculateResult();
+                      },
+                    ),
+                  )
+                : Text(
+                    result.toStringAsFixed(2).length > 12
+                        ? "${result.toStringAsFixed(2).substring(0, 10)}..."
+                        : result.toStringAsFixed(2),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: result.toStringAsFixed(2).length > 7
+                          ? 14.sp
+                          : 22.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+          if (!isComparisonCurrency)
+            isSwapped
+                ? SizedBox(
+                    width: 120.h,
+                    child: TextField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Amount",
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: const Color(0xFF5d6d7e),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: Colors.black,
+                      ),
+                      onChanged: (value) {
+                        _calculateResult();
+                      },
+                    ),
+                  )
+                : Text(
+                    result.toStringAsFixed(2).length > 12
+                        ? "${result.toStringAsFixed(2).substring(0, 10)}..."
+                        : result.toStringAsFixed(2),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: result.toStringAsFixed(2).length > 7
+                          ? 14.sp
+                          : 22.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
         ],
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.h),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            
-            CachedNetworkImage(
-              imageUrl: flagUrl,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 3.0,
-                  ),
-                ),
-                child: CircleAvatar(
-                  radius: 40.h,
-                  backgroundImage: imageProvider,
-                ),
-              ),
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-            SizedBox(width: 8.w),
-            Text(
-              currencyName,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 25.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Spacer(),
-            if (isComparisonCurrency)
-              !isSwapped
-                  ? SizedBox(
-                      width: 120.h,
-                      child: TextField(
-                        controller: _amountController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: "Amount",
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          filled: true,
-                          fillColor: const Color(0xFF5d6d7e),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.black),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                          ),
-                        ),
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Colors.black,
-                        ),
-                        onChanged: (value) {
-                          _calculateResult();
-                        },
-                      ),
-                    )
-                  : Text(
-                      result.toStringAsFixed(2).length > 12
-                          ? "${result.toStringAsFixed(2).substring(0, 10)}..."
-                          : result.toStringAsFixed(2),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: result.toStringAsFixed(2).length > 7
-                            ? 14.sp
-                            : 22.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-            if (!isComparisonCurrency)
-              isSwapped
-                  ? SizedBox(
-                      width: 120.h,
-                      child: TextField(
-                        controller: _amountController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: "Amount",
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          filled: true,
-                          fillColor: const Color(0xFF5d6d7e),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.black),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                          ),
-                        ),
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Colors.black,
-                        ),
-                        onChanged: (value) {
-                          _calculateResult();
-                        },
-                      ),
-                    )
-                  : Text(
-                      result.toStringAsFixed(2).length > 12
-                          ? "${result.toStringAsFixed(2).substring(0, 10)}..."
-                          : result.toStringAsFixed(2),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: result.toStringAsFixed(2).length > 7
-                            ? 14.sp
-                            : 22.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +201,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 30.h),
+      appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 30.h, rightPadding: 50,),
       body: Padding(
         padding:
             EdgeInsets.only(right: 12.h, left: 12.h, bottom: 50, top: 10.h),

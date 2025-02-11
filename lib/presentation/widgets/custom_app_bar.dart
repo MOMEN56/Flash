@@ -1,4 +1,5 @@
 import 'package:flash/constants.dart';
+import 'package:flash/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -6,31 +7,38 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onSearchPressed;
   final bool showSearchIcon;
   final double titlePaddingLeft;
-  final bool showBackButton; // خاصية جديدة لتحديد إذا كانت الأيقونة تظهر أم لا
+  final double rightPadding; // متغير إلزامي
+  final bool showBackButton;
 
   CustomAppBar({
     super.key,
+    required this.rightPadding, // اجعله مطلوبًا
     this.onSearchPressed,
     this.showSearchIcon = true,
-    this.titlePaddingLeft = 80, // تعيين قيمة افتراضية 70
-    this.showBackButton = true, // تعيين قيمة افتراضية true لعرض الأيقونة
-  }) : preferredSize = Size.fromHeight(kToolbarHeight);
+    this.titlePaddingLeft = 100,
+    this.showBackButton = true,
+  }) : preferredSize = const Size.fromHeight(kToolbarHeight);
 
   @override
   final Size preferredSize;
 
   @override
   Widget build(BuildContext context) {
+    Locale currentLocale = Localizations.localeOf(context);
+    bool isArabic = currentLocale.languageCode == 'ar';
+
     return AppBar(
-      backgroundColor: Color(kPrimaryColor),
-      iconTheme: IconThemeData(color: Colors.white), // لون أيقونة الباك
+      backgroundColor: const Color(kPrimaryColor),
+      iconTheme: const IconThemeData(color: Colors.white),
       title: Padding(
         padding: EdgeInsets.only(
-            left: titlePaddingLeft.h), // استخدام البادينج المحدد
+          right: isArabic? rightPadding.h:0.h, // استخدم المتغير الإجباري
+          left: isArabic? 0.h.h:titlePaddingLeft.h, // استخدم المتغير الإجباري
+        ),
         child: Row(
           children: [
             Text(
-              "Flash",
+              S.of(context).AppBarTitle,
               style: TextStyle(
                 fontFamily: 'PassionOne',
                 color: Colors.white,
@@ -47,7 +55,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 32.w),
               onPressed: () => Navigator.pop(context),
             )
-          : null, // إذا كانت الخاصية showBackButton غير مفعلة، لا تظهر أيقونة الرجوع
+          : null,
       actions: showSearchIcon
           ? [
               IconButton(

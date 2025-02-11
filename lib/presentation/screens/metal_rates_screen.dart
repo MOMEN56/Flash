@@ -1,5 +1,7 @@
+import 'package:flash/crypto_translations.dart';
 import 'package:flash/data/models/matal_model.dart';
 import 'package:flash/data/web_services/metal_web_services.dart';
+import 'package:flash/generated/l10n.dart';
 import 'package:flash/presentation/widgets/comparison_unit_container.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
 import 'package:flash/presentation/widgets/error_message_widget.dart';
@@ -25,7 +27,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
   @override
   void initState() {
     super.initState();
-    futureMetalPrices = WebService().fetchMetalPrices(unit); // Pass unit here
+    futureMetalPrices = WebService().fetchMetalPrices(unit);
   }
 
   void addSearchedForMetalToSearchedList(String searchedMetal) {
@@ -36,11 +38,12 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
         errorMessage = '';
       } else {
         filteredMetalList.clear();
-        filteredMetalList.addAll(metalList
-            .where((metal) =>
-                metal.toLowerCase().startsWith(searchedMetal.toLowerCase()))
-            .toList());
-        errorMessage = filteredMetalList.isEmpty ? 'No metals found' : '';
+        filteredMetalList.addAll(
+          metalList.where(
+            (metal) => metal.toLowerCase().contains(searchedMetal.toLowerCase()),
+          ).toList(),
+        );
+        errorMessage = filteredMetalList.isEmpty ? S.of(context).NoMetalsFound : '';
       }
     });
   }
@@ -61,38 +64,38 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Locale currentLocale = Localizations.localeOf(context);
+    bool isArabic = currentLocale.languageCode == 'ar';
+
     return Scaffold(
       appBar: _isSearching
           ? PreferredSize(
-              preferredSize:
-                  Size.fromHeight(kToolbarHeight), // Set height of the AppBar
+              preferredSize: Size.fromHeight(kToolbarHeight),
               child: CurrencySearchWidget(
                 searchTextController: _searchTextController,
-                addSearchedForCurrencyToSearchedList:
-                    addSearchedForMetalToSearchedList,
+                addSearchedForCurrencyToSearchedList: addSearchedForMetalToSearchedList,
                 onBackPressed: _stopSearching,
-                searchHint: 'Search for a metal...',
+                searchHint: S.of(context).SearchForAMetal,
               ),
             )
           : CustomAppBar(
               onSearchPressed: _startSearch,
               showSearchIcon: true,
               showBackButton: false,
+              rightPadding: 100,
             ),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverToBoxAdapter(
               child: Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 24.0.h),
+                padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 24.0.h),
                 child: ComparisonUnitContainer(
                   unit: unit,
                   onUnitSelected: (selectedUnit) {
                     setState(() {
-                      unit = selectedUnit; // Change the unit
-                      futureMetalPrices = WebService().fetchMetalPrices(
-                          unit); // Update the request with new unit
+                      unit = selectedUnit;
+                      futureMetalPrices = WebService().fetchMetalPrices(unit);
                     });
                   },
                 ),
@@ -106,11 +109,11 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return ErrorMessageWidget(
-                  errorMessage: 'Error: ${snapshot.error}');
+              return ErrorMessageWidget(errorMessage: 'Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               final prices = snapshot.data!.getMetalPrices();
-              metalList = prices.keys.toList();
+              metalList = prices.keys.map((metal) => getTranslatedMetalName(metal, currentLocale)).toList();
+
               if (filteredMetalList.isEmpty) {
                 filteredMetalList.addAll(metalList);
               }
@@ -122,15 +125,15 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
               return ListView.builder(
                 itemCount: filteredMetalList.length,
                 itemBuilder: (context, index) {
-                  final metal = filteredMetalList[index];
-                  final price = prices[metal];
+                  final translatedMetal = filteredMetalList[index];
+                  final originalMetal = prices.keys.firstWhere((key) => getTranslatedMetalName(key, currentLocale) == translatedMetal);
+                  final price = prices[originalMetal];
 
                   return GestureDetector(
                     onTap: () {},
                     child: Container(
                       height: 72.5.h,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.h),
+                      margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.h),
                       decoration: BoxDecoration(
                         color: const Color(0xFF5d6d7e),
                         borderRadius: BorderRadius.circular(16),
@@ -144,24 +147,20 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                               children: [
                                 ClipOval(
                                   child: Container(
-                                    width: 48.h, // Adjusted width and height
+                                    width: 48.h,
                                     height: 48.h,
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors
-                                            .white, // Set border color to white
-                                        width: 2.0, // Set border width
+                                        color: Colors.white,
+                                        width: 2.0,
                                       ),
-                                      shape: BoxShape
-                                          .circle, // Ensure the border follows the circular shape
+                                      shape: BoxShape.circle,
                                     ),
                                     child: ClipOval(
                                       child: Image.asset(
                                         'assets/images/images.jpg',
-                                        width: 40
-                                            .h, // Image width (slightly smaller than the container to show the border)
-                                        height: 40
-                                            .h, // Image height (same as width)
+                                        width: 40.h,
+                                        height: 40.h,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -169,13 +168,13 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                                 ),
                                 SizedBox(width: 8.h),
                                 Text(
-                                  metal,
+                                  translatedMetal,
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
+                                )
                               ],
                             ),
                           ),
@@ -187,15 +186,14 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                                   '${price?.toStringAsFixed(2)}\$',
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: (price != null &&
-                                            price!.toStringAsFixed(2).length >
-                                                7)
+                                    fontSize: (price != null && price.toStringAsFixed(2).length > 7)
                                         ? 14.sp
                                         : 16.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
+                              SizedBox(width: isArabic ? 8.h : 0.h),
                             ],
                           ),
                         ],

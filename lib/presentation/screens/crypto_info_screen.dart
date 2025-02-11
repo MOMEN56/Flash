@@ -3,9 +3,7 @@ import 'package:flash/presentation/widgets/text_info_in_crypto_info_screen_widge
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flash/data/models/cyrpto_model.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart';
-import 'package:flash/presentation/screens/crypto_rates_screen.dart';
-import 'package:flash/presentation/screens/currencies_rates_screen.dart';
+import 'package:flash/generated/l10n.dart'; // استيراد ملف الترجمة
 
 class CryptoInfoScreen extends StatelessWidget {
   final CryptoModel crypto;
@@ -14,11 +12,8 @@ class CryptoInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      int currentIndex = 0; // Track bottom bar index
-
     return Scaffold(
-      appBar:
-          CustomAppBar(showSearchIcon: false, titlePaddingLeft: 30.h),
+      appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 50.h, rightPadding: 50,),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.w),
@@ -38,63 +33,62 @@ class CryptoInfoScreen extends StatelessWidget {
                 ),
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Name', value: crypto.name),
+                  label: S.of(context).name, value: crypto.name),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Symbol', value: crypto.symbol),
+                  label: S.of(context).symbol, value: crypto.symbol),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Current Price',
+                  label: S.of(context).currentPrice,
                   value: '${crypto.currentPrice.toStringAsFixed(2)} \$'),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Market Cap',
+                  label: S.of(context).marketCap,
                   value: '${crypto.marketCap.toStringAsFixed(2)} \$'),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Market Cap Rank',
+                  label: S.of(context).marketCapRank,
                   value: crypto.marketCapRank.toString()),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Total Volume',
+                  label: S.of(context).totalVolume,
                   value: '${crypto.totalVolume.toStringAsFixed(2)} \$'),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Highest Price In The Last 24 Hours',
+                label: S.of(context).high24h,
                 value: '${crypto.high24h.toStringAsFixed(2)} \$',
                 fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Lowest Price In The Last 24 Hours',
+                label: S.of(context).low24h,
                 value: '${crypto.low24h.toStringAsFixed(2)} \$',
                 fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Price Change In The Last 24 Hour',
+                label: S.of(context).priceChange24h,
                 value: '${crypto.priceChange24h.toStringAsFixed(2)} \$',
                 fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                label: 'Price Change Percentage In The Last 24 Hour',
+                label: S.of(context).priceChangePercentage24h,
                 value:
                     '${crypto.priceChangePercentage24h.toStringAsFixed(2)} %',
                 fontSize: 9.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Circulating Supply',
+                  label: S.of(context).circulatingSupply,
                   value: crypto.circulatingSupply.toStringAsFixed(2)),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Total Supply',
+                  label: S.of(context).totalSupply,
                   value: crypto.totalSupply.toStringAsFixed(2)),
               if (crypto.maxSupply != null)
                 TextInfoTextInCryptoInfoScreenWidget(
-                    label: 'Max Supply',
+                    label: S.of(context).maxSupply,
                     value: crypto.maxSupply!.toStringAsFixed(2)),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Highest Price Overall',
+                  label: S.of(context).ath,
                   value: '${crypto.ath.toStringAsFixed(2)} \$'),
               TextInfoTextInCryptoInfoScreenWidget(
-                  label: 'Lowest Price Overall',
+                  label: S.of(context).atl,
                   value: '${crypto.atl.toStringAsFixed(2)} \$'),
             ],
           ),
         ),
       ),
-      
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flash/constants.dart';
+import 'package:flash/generated/l10n.dart';
 import 'package:flash/presentation/screens/metal_rates_screen.dart';
 import 'package:flash/presentation/screens/crypto_rates_screen.dart';
 import 'package:flash/presentation/screens/currencies_rates_screen.dart';
@@ -37,7 +38,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           _buildNavItem(
             index: 0,
             icon: Icons.attach_money,
-            label: 'Currency',
+            label: S.of(context).currency,
             onTap: () {
               onScreenChange(0); // استدعاء التغيير باستخدام onScreenChange
             },
@@ -45,7 +46,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           _buildNavItem(
             index: 1,
             icon: Icons.currency_bitcoin,
-            label: 'Crypto',
+            label: S.of(context).cyrpto,
             onTap: () {
               onScreenChange(1); // استدعاء التغيير باستخدام onScreenChange
             },
@@ -53,7 +54,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           _buildNavItem(
             index: 2,
             icon: Icons.precision_manufacturing,
-            label: 'Metal',
+            label: S.of(context).metal,
             onTap: () {
               onScreenChange(2); // استدعاء التغيير باستخدام onScreenChange
             },
