@@ -40,5 +40,6 @@
     "NoMetalsFound": "لا توجد معادن",
     "NoCurrenciesFound": "لا توجد عملات",
     "currency_name": "{currency}",
-    "comparison_currency": "    عملة المقارنة"
+    "comparison_currency": "    عملة المقارنة",
+    "current_language": "EN"
   }

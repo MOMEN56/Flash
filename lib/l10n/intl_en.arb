@@ -1,7 +1,7 @@
 {
     "AppBarTitle": "Flash",
     "currency": "Currencies",
-    "cyrpto": "Cryptocurrencies",
+    "cyrpto": "Crypto",
     "metal": "Metals",
     "gram": "Gram",
     "Ounce": "Ounce",
@@ -40,5 +40,7 @@
     "NoMetalsFound": "No metals found",
     "NoCurrenciesFound": "No currencies found",
     "currency_name": "{currency}",
-    "comparison_currency": "    comparison currency"
+    "comparison_currency": "    comparison currency",
+    "current_language": "عربي"
+
   }

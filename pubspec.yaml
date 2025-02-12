@@ -38,5 +38,9 @@ flutter:
     - family: PassionOne
       fonts:
         - asset: assets/fonts/PassionOne-Bold.ttf
+    - family: Lalezar
+      fonts:
+        - asset: assets/fonts/Lalezar-Regular.ttf
+
 flutter_intl:
   enabled: true

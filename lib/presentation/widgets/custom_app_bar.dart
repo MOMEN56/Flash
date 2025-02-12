@@ -1,22 +1,26 @@
+import 'package:flash/business_logic/cubit/locale_cubit.dart';
 import 'package:flash/constants.dart';
 import 'package:flash/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onSearchPressed;
   final bool showSearchIcon;
   final double titlePaddingLeft;
-  final double rightPadding; // متغير إلزامي
+  final double rightPadding;
   final bool showBackButton;
+  final bool showLanguageIcon;
 
   CustomAppBar({
     super.key,
-    required this.rightPadding, // اجعله مطلوبًا
+    required this.rightPadding,
     this.onSearchPressed,
     this.showSearchIcon = true,
     this.titlePaddingLeft = 100,
     this.showBackButton = true,
+    this.showLanguageIcon = false,
   }) : preferredSize = const Size.fromHeight(kToolbarHeight);
 
   @override
@@ -32,17 +36,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: const IconThemeData(color: Colors.white),
       title: Padding(
         padding: EdgeInsets.only(
-          right: isArabic? rightPadding.h:0.h, // استخدم المتغير الإجباري
-          left: isArabic? 0.h.h:titlePaddingLeft.h, // استخدم المتغير الإجباري
+          right: isArabic ? rightPadding.h : 0.h,
+          left: isArabic ? 20.h : titlePaddingLeft.h,
         ),
         child: Row(
           children: [
             Text(
               S.of(context).AppBarTitle,
               style: TextStyle(
-                fontFamily: 'PassionOne',
+                fontFamily: isArabic ? 'Lalezar' : 'PassionOne',
                 color: Colors.white,
-                fontSize: 50.sp,
+                fontSize: isArabic ? 40.sp : 50.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -50,20 +54,44 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ),
-      leading: showBackButton
-          ? IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white, size: 32.w),
-              onPressed: () => Navigator.pop(context),
+      leading: showLanguageIcon
+          ? GestureDetector(
+              onTap: () {
+                context
+                    .read<LocaleCubit>()
+                    .toggleLocale(); // تغيير اللغة عند الضغط
+              },
+              child: Padding(
+                padding: EdgeInsets.only(top: 4.w),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 6.w,
+                    vertical: 4.h,
+                  ),
+                  child: BlocBuilder<LocaleCubit, Locale>(
+                    builder: (context, locale) {
+                      return Text(
+                        S.of(context).current_language,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
             )
           : null,
-      actions: showSearchIcon
-          ? [
-              IconButton(
-                icon: Icon(Icons.search, color: Colors.white, size: 32.w),
-                onPressed: onSearchPressed,
-              ),
-            ]
-          : [],
+      actions: [
+        if (showSearchIcon)
+          IconButton(
+            icon: Icon(Icons.search,
+                color: Colors.white, size: 28.w), // تأكيد الحجم الثابت
+            onPressed: onSearchPressed,
+          ),
+      ],
     );
   }
 }

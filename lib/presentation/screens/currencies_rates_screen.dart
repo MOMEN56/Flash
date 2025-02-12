@@ -174,6 +174,9 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Locale currentLocale = Localizations.localeOf(context);
+    bool isArabic = currentLocale.languageCode == 'ar';
+
     return Scaffold(
       appBar: _isSearching
           ? PreferredSize(
@@ -186,7 +189,11 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                 onBackPressed: _stopSearching,
               ),
             )
-          : CustomAppBar(onSearchPressed: _startSearch, showBackButton: false, rightPadding: 100,),
+          : CustomAppBar(
+              onSearchPressed: _startSearch,
+              showBackButton: false,
+              rightPadding: 60,
+              showLanguageIcon: true),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
@@ -197,7 +204,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                   itemBuilder: (context, index) {
                     final currency = filteredCurrencyList[index];
                     final rate = rates![currency];
-                    final translatedCurrency = getTranslatedCurrencyName(currency, Localizations.localeOf(context));
+                    final translatedCurrency = getTranslatedCurrencyName(
+                        currency, Localizations.localeOf(context));
 
                     return GestureDetector(
                       onTap: () => _onCurrencyTap(currency),
@@ -263,15 +271,19 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                 children: [
                                   Text(
                                     currency == comparisonCurrency
-                                        ?  S.of(context).comparison_currency
+                                        ? S.of(context).comparison_currency
                                         : rate.toString(),
                                     style: TextStyle(
                                       color: currency == comparisonCurrency
                                           ? Colors.grey
                                           : Colors.black,
-                                      fontSize: currency == comparisonCurrency
-                                          ? 16.sp
-                                          : 16.sp,
+                                      fontSize: isArabic
+                                          ? currency == comparisonCurrency
+                                              ? 16.sp
+                                              : 16.sp
+                                          : currency == comparisonCurrency
+                                              ? 14.sp
+                                              : 16.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

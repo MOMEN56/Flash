@@ -35,12 +35,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // التوجيه بعد 3 ثواني
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/homeScreen'); // التوجيه إلى HomeScreen
+      Navigator.pushReplacementNamed(
+          context, '/homeScreen'); // التوجيه إلى HomeScreen
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Locale currentLocale = Localizations.localeOf(context);
+    bool isArabic = currentLocale.languageCode == 'ar';
+
     return Scaffold(
       body: Center(
         child: Row(
@@ -52,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Text(
                 S.of(context).AppBarTitle,
                 style: TextStyle(
-                  fontFamily: 'PassionOne',
+                  fontFamily: isArabic ? 'Lalezar' : 'PassionOne',
                   color: Colors.white,
                   fontSize: 80.sp,
                   fontWeight: FontWeight.bold,

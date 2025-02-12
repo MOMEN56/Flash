@@ -62,7 +62,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "currency": MessageLookupByLibrary.simpleMessage("Currencies"),
     "currency_name": m0,
     "currentPrice": MessageLookupByLibrary.simpleMessage("Current Price"),
-    "cyrpto": MessageLookupByLibrary.simpleMessage("Cryptocurrencies"),
+    "current_language": MessageLookupByLibrary.simpleMessage("عربي"),
+    "cyrpto": MessageLookupByLibrary.simpleMessage("Crypto"),
     "fullyDilutedValuation": MessageLookupByLibrary.simpleMessage(
       "Fully Diluted Valuation",
     ),

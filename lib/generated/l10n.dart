@@ -65,9 +65,9 @@ class S {
     return Intl.message('Currencies', name: 'currency', desc: '', args: []);
   }
 
-  /// `Cryptocurrencies`
+  /// `Crypto`
   String get cyrpto {
-    return Intl.message('Cryptocurrencies', name: 'cyrpto', desc: '', args: []);
+    return Intl.message('Crypto', name: 'cyrpto', desc: '', args: []);
   }
 
   /// `Metals`
@@ -368,6 +368,11 @@ class S {
       desc: '',
       args: [],
     );
+  }
+
+  /// `عربي`
+  String get current_language {
+    return Intl.message('عربي', name: 'current_language', desc: '', args: []);
   }
 }
 
