@@ -140,7 +140,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
             : CustomAppBar(
                 onSearchPressed: _startSearch,
                 showBackButton: false,
-                rightPadding: 100,
+                rightPadding: 50,
                 showLanguageIcon: true,
               ),
         body: errorMessage.isNotEmpty

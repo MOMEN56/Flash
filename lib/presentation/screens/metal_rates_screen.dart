@@ -127,7 +127,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                 onSearchPressed: _startSearch,
                 showSearchIcon: true,
                 showBackButton: false,
-                rightPadding: 60,
+                rightPadding: 50,
                 showLanguageIcon: true),
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {

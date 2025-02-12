@@ -30,21 +30,18 @@ class ComparisonUnitContainer extends StatelessWidget {
             onUnitSelected(
                 unitMapping[unitName]!); // استدعاء دالة onUnitSelected
           },
-          child: Padding(
-            padding: EdgeInsets.symmetric( horizontal: 4.0.h),
-            child: Container(
-              padding:
-                  EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 10.0.h),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.grey[300],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                unitName,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+          child: Container(
+            padding:
+                EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 10.0.h),
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.blue : Colors.grey[300],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              unitName,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),

@@ -192,7 +192,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
           : CustomAppBar(
               onSearchPressed: _startSearch,
               showBackButton: false,
-              rightPadding: 60,
+              rightPadding: 50,
               showLanguageIcon: true),
       body: isLoading
           ? Center(child: CircularProgressIndicator())

@@ -52,6 +52,10 @@ Widget buildCurrencyContainer(
   double heightRatio,
 ) {
   String translatedCurrencyName = getTranslatedCurrencyName(currencyCode, Localizations.localeOf(context));
+  
+  // تحديد إذا كانت اللغة هي العربية
+  Locale currentLocale = Localizations.localeOf(context);
+  bool isArabic = currentLocale.languageCode == 'ar';
 
   return Container(
     height: 200.h * heightRatio,
@@ -94,7 +98,7 @@ Widget buildCurrencyContainer(
             translatedCurrencyName,
             style: TextStyle(
               color: Colors.black,
-              fontSize: translatedCurrencyName.length > 10 ? 14.sp : 25.sp,
+              fontSize: isArabic ? 12.sp : (translatedCurrencyName.length > 5 ? 14.sp : 20.sp), // هنا قمنا بتحديد حجم الخط حسب اللغة
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -102,7 +106,7 @@ Widget buildCurrencyContainer(
           if (isComparisonCurrency)
             !isSwapped
                 ? SizedBox(
-                    width: 120.h,
+                    width: isArabic? 100.h:130.h,
                     child: TextField(
                       controller: _amountController,
                       keyboardType: TextInputType.number,
@@ -145,12 +149,12 @@ Widget buildCurrencyContainer(
           if (!isComparisonCurrency)
             isSwapped
                 ? SizedBox(
-                    width: 120.h,
+                    width: isArabic? 100.h:130.h,
                     child: TextField(
                       controller: _amountController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: "Amount",
+                        hintText: S.of(context).Amount,
                         hintStyle: const TextStyle(color: Colors.grey),
                         filled: true,
                         fillColor: const Color(0xFF5d6d7e),
@@ -193,6 +197,7 @@ Widget buildCurrencyContainer(
 
   @override
   Widget build(BuildContext context) {
+
     final mediaQuery = MediaQuery.of(context);
     final screenHeight = mediaQuery.size.height;
     final keyboardHeight = mediaQuery.viewInsets.bottom;
