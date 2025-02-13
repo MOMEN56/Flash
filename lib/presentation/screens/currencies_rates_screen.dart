@@ -100,15 +100,24 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
   void addSearchedForCurrencyToSearchedList(String searchedCurrency) {
     setState(() {
       if (searchedCurrency.isEmpty) {
-        filteredCurrencyList.clear();
-        filteredCurrencyList.addAll(currencyList);
+        filteredCurrencyList
+          ..clear()
+          ..addAll(currencyList);
       } else {
         filteredCurrencyList.clear();
-        filteredCurrencyList.addAll(currencyList
-            .where((currency) => currency
-                .toLowerCase()
-                .startsWith(searchedCurrency.toLowerCase()))
-            .toList());
+        filteredCurrencyList.addAll(currencyList.where((currency) {
+          // الحصول على الاسم المترجم للعملة
+          final translatedCurrency = getTranslatedCurrencyName(
+              currency, Localizations.localeOf(context));
+
+          // البحث في كل من الرمز والاسم المترجم
+          return currency
+                  .toLowerCase()
+                  .contains(searchedCurrency.toLowerCase()) ||
+              translatedCurrency
+                  .toLowerCase()
+                  .contains(searchedCurrency.toLowerCase());
+        }).toList());
       }
       errorMessage =
           filteredCurrencyList.isEmpty ? S.of(context).NoCurrenciesFound : '';
@@ -174,6 +183,9 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double MediaQueryHeight = MediaQuery.of(context).size.height;
+    double MediaQueryWidth = MediaQuery.of(context).size.width;
+
     Locale currentLocale = Localizations.localeOf(context);
     bool isArabic = currentLocale.languageCode == 'ar';
 
@@ -192,7 +204,8 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
           : CustomAppBar(
               onSearchPressed: _startSearch,
               showBackButton: false,
-              rightPadding: 50,
+              rightPadding: 0,
+              titlePaddingLeft: 0,
               showLanguageIcon: true),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
@@ -210,18 +223,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                     return GestureDetector(
                       onTap: () => _onCurrencyTap(currency),
                       child: Container(
-                        height: 72.5.h,
+                        height: MediaQueryHeight*0.1,
                         margin: EdgeInsets.symmetric(
-                            vertical: 8.h, horizontal: 12.h),
+                            vertical: MediaQueryHeight*0.007, horizontal:MediaQueryWidth*0.035),
                         decoration: BoxDecoration(
                           color: Color(0xFF5d6d7e),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
+                          borderRadius: BorderRadius.circular(16.r),
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.h),
@@ -241,11 +248,11 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                               shape: BoxShape.circle,
                                               border: Border.all(
                                                 color: Colors.white,
-                                                width: 2.0,
+                                                width:3.w,
                                               ),
                                             ),
                                             child: CircleAvatar(
-                                              radius: 28.h,
+                                              radius:MediaQueryHeight*0.03,
                                               backgroundImage: imageProvider,
                                             ),
                                           ),
@@ -256,12 +263,12 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                           Icons.flag,
                                           color: Colors.grey,
                                         ),
-                                  SizedBox(width: 8.h),
+                                  SizedBox(width: 8.w),
                                   Text(
                                     translatedCurrency,
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 16.sp,
+                                      fontSize: MediaQueryWidth*0.04,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -277,13 +284,10 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                       color: currency == comparisonCurrency
                                           ? Colors.grey
                                           : Colors.black,
-                                      fontSize: isArabic
-                                          ? currency == comparisonCurrency
-                                              ? 16.sp
-                                              : 16.sp
-                                          : currency == comparisonCurrency
-                                              ? 14.sp
-                                              : 16.sp,
+                                      fontSize: 
+                                           currency == comparisonCurrency
+                                              ? MediaQueryWidth*0.03:
+                                               MediaQueryWidth*0.04,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -291,7 +295,7 @@ class _CurrenciesRatesScreenState extends State<CurrenciesRatesScreen> {
                                     IconButton(
                                       icon: Icon(
                                         Icons.currency_exchange,
-                                        size: 22.w,
+                                        size: MediaQueryHeight*0.03,
                                       ),
                                       onPressed: () {
                                         _onConvertPressed(currency, rate);

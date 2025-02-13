@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.rightPadding,
     this.onSearchPressed,
     this.showSearchIcon = true,
-    this.titlePaddingLeft = 30,
+    this.titlePaddingLeft = 0,
     this.showBackButton = true,
     this.showLanguageIcon = false,
   }) : preferredSize = const Size.fromHeight(kToolbarHeight);
@@ -34,26 +34,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: const Color(kPrimaryColor),
       iconTheme: const IconThemeData(color: Colors.white),
-      title: Padding(
-        padding: EdgeInsets.only(
-          right: isArabic ? rightPadding.h : 0.h,
-          left: isArabic ? 20.h : titlePaddingLeft.h,
-        ),
-        child: Row(
-          children: [
-            Text(
-              S.of(context).AppBarTitle,
-              style: TextStyle(
-                fontFamily: isArabic ? 'Lalezar' : 'PassionOne',
-                color: Colors.white,
-                fontSize: isArabic ? 40.sp : 50.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Icon(Icons.flash_on, size: 55.w, color: Colors.yellow),
-          ],
+title: Center(
+  child: Row(
+    mainAxisSize: MainAxisSize.min, // يجعل الحجم محدودًا بالعناصر فقط
+    children: [
+      Text(
+        S.of(context).AppBarTitle,
+        style: TextStyle(
+          fontFamily: isArabic ? 'Lalezar' : 'PassionOne',
+          color: Colors.white,
+          fontSize:isArabic?MediaQuery.of(context).size.height * 0.045:MediaQuery.of(context).size.height * 0.06,
+          fontWeight: FontWeight.bold,
         ),
       ),
+      Icon(Icons.flash_on, size: MediaQuery.of(context).size.height * 0.07, color: Colors.yellow),
+    ],
+  ),
+),
       leading: showLanguageIcon
           ? GestureDetector(
               onTap: () {
@@ -62,19 +59,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     .toggleLocale(); // تغيير اللغة عند الضغط
               },
               child: Padding(
-                padding: EdgeInsets.only(top: 4.w),
+                padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.015,right: isArabic? MediaQuery.of(context).size.width * 0.03:MediaQuery.of(context).size.width * 0.00,left: isArabic?MediaQuery.of(context).size.width * 0.03 :MediaQuery.of(context).size.width * 0.03),
                 child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 6.w,
-                    vertical: 4.h,
-                  ),
                   child: BlocBuilder<LocaleCubit, Locale>(
                     builder: (context, locale) {
                       return Text(
                         S.of(context).current_language,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 14.sp,
+                          fontSize:MediaQuery.of(context).size.width * 0.035,
                           fontWeight: FontWeight.bold,
                         ),
                       );

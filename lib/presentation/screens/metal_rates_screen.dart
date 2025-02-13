@@ -103,6 +103,8 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
   Widget build(BuildContext context) {
     Locale currentLocale = Localizations.localeOf(context);
     bool isArabic = currentLocale.languageCode == 'ar';
+    double MediaQueryHeight = MediaQuery.of(context).size.height;
+    double MediaQueryWidth = MediaQuery.of(context).size.width;
 
     return BlocListener<LocaleCubit, Locale>(
       listener: (context, locale) {
@@ -127,15 +129,16 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                 onSearchPressed: _startSearch,
                 showSearchIcon: true,
                 showBackButton: false,
-                rightPadding: 50,
+                rightPadding: 0,
                 showLanguageIcon: true),
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverToBoxAdapter(
                 child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 24.0.h),
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQueryHeight * 0.007,
+                      horizontal: MediaQueryWidth * 0.035),
                   child: ComparisonUnitContainer(
                     unit: unit,
                     onUnitSelected: (selectedUnit) {
@@ -192,9 +195,10 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                     return GestureDetector(
                       onTap: () {},
                       child: Container(
-                        height: 72.5.h,
+                        height: MediaQueryHeight * 0.1,
                         margin: EdgeInsets.symmetric(
-                            vertical: 8.h, horizontal: 12.h),
+                            vertical: MediaQueryHeight * 0.007,
+                            horizontal: MediaQueryWidth * 0.035),
                         decoration: BoxDecoration(
                           color: const Color(0xFF5d6d7e),
                           borderRadius: BorderRadius.circular(16),
@@ -202,42 +206,39 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.h),
-                              child: Row(
-                                children: [
-                                  ClipOval(
-                                    child: Container(
-                                      width: 48.h,
-                                      height: 48.h,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2.0,
-                                        ),
-                                        shape: BoxShape.circle,
+                            Row(
+                              children: [
+                                ClipOval(
+                                  child: Container(
+                                    width: 48.w,
+                                    height: 48.h,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2.0.w,
                                       ),
-                                      child: ClipOval(
-                                        child: Image.asset(
-                                          'assets/images/images.jpg',
-                                          width: 40.h,
-                                          height: 40.h,
-                                          fit: BoxFit.cover,
-                                        ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'assets/images/images.jpg',
+                                        width: 40.w,
+                                        height: 40.h,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 8.h),
-                                  Text(
-                                    translatedMetal,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                ],
-                              ),
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  translatedMetal,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
                             ),
                             Row(
                               children: [
@@ -257,7 +258,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     )),
-                                SizedBox(width: isArabic ? 8.h : 0.h),
+                                SizedBox(width: isArabic ? 8.w : 0.w),
                               ],
                             ),
                           ],

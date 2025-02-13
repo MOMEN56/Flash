@@ -15,7 +15,12 @@ class _NoConnectionScreenState extends State<NoConnectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(showSearchIcon: false,titlePaddingLeft: 0.h,showBackButton: false, rightPadding: 100,),
+      appBar: CustomAppBar(
+        showSearchIcon: false,
+        titlePaddingLeft: 0.h,
+        showBackButton: false,
+        rightPadding:0, // تحديد عرض العنوان بشكل صحيح
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -20,10 +20,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double MediaQueryHeight = MediaQuery.of(context).size.height;
+    double MediaQueryWidth = MediaQuery.of(context).size.width;
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5.h),
       decoration: BoxDecoration(
-        color: Color(kPrimaryColor), // تغيير اللون أو جعله dynamic بناءً على الكود
+        color:
+            Color(kPrimaryColor), // تغيير اللون أو جعله dynamic بناءً على الكود
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -78,7 +82,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 25.w,
+            size: 24.sp,
             color: isSelected ? Colors.white : Colors.grey,
           ),
           SizedBox(height: 4.h),

@@ -310,10 +310,10 @@ class S {
     );
   }
 
-  /// `Search for a cryptocurrency...`
+  /// `Search for a crypto...`
   String get SearchForACrypto {
     return Intl.message(
-      'Search for a cryptocurrency...',
+      'Search for a crypto...',
       name: 'SearchForACrypto',
       desc: '',
       args: [],

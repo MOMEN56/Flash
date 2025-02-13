@@ -28,14 +28,13 @@ class CurrencySearchWidget extends StatelessWidget {
         controller: searchTextController,
         onChanged: addSearchedForCurrencyToSearchedList,
         style: TextStyle(
-          color: Colors.white,
-          fontSize: 18.sp,
-        ),
+            color: Colors.white,
+            fontSize: MediaQuery.of(context).size.height * 0.022),
         decoration: InputDecoration(
           hintText: searchHint, // Use the provided hint here
           hintStyle: TextStyle(
             color: Colors.white70,
-            fontSize: 14.sp,
+            fontSize: MediaQuery.of(context).size.height * 0.02,
           ),
           border: InputBorder.none,
         ),

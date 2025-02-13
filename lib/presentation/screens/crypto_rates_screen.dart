@@ -117,6 +117,9 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double MediaQueryHeight = MediaQuery.of(context).size.height;
+    double MediaQueryWidth = MediaQuery.of(context).size.width;
+
     return BlocListener<LocaleCubit, Locale>(
       listener: (context, locale) {
         if (_currentLocale != locale) {
@@ -190,9 +193,9 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                           }
                         },
                         child: Container(
-                          height: 72.5.h,
+                          height:MediaQueryHeight*0.1,
                           margin: EdgeInsets.symmetric(
-                              vertical: 8.h, horizontal: 12.w),
+                             vertical: MediaQueryHeight*0.007, horizontal:MediaQueryWidth*0.035),
                           decoration: BoxDecoration(
                             color: const Color(0xFF5d6d7e),
                             borderRadius: BorderRadius.circular(16),
@@ -214,7 +217,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
                                       child: Image.network(
                                         crypto.image ??
                                             'https://example.com/placeholder.png',
-                                        width: 40.h,
+                                        width: 40.w,
                                         height: 40.h,
                                         fit: BoxFit.cover,
                                       ),

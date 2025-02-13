@@ -44,6 +44,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     Locale currentLocale = Localizations.localeOf(context);
     bool isArabic = currentLocale.languageCode == 'ar';
+    double MediaQueryHeight = MediaQuery.of(context).size.height;
+    double MediaQueryWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Center(
@@ -58,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 style: TextStyle(
                   fontFamily: isArabic ? 'Lalezar' : 'PassionOne',
                   color: Colors.white,
-                  fontSize: 80.sp,
+                  fontSize: MediaQueryWidth*0.2,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -68,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
               duration: const Duration(seconds: 1),
               child: Icon(
                 Icons.flash_on,
-                size: 95.w,
+                size: MediaQueryHeight*0.15,
                 color: Colors.yellow,
               ),
             ),

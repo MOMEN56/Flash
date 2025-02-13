@@ -35,7 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "NoMetalsFound": MessageLookupByLibrary.simpleMessage("No metals found"),
     "Ounce": MessageLookupByLibrary.simpleMessage("Ounce"),
     "SearchForACrypto": MessageLookupByLibrary.simpleMessage(
-      "Search for a cryptocurrency...",
+      "Search for a crypto...",
     ),
     "SearchForACurrency": MessageLookupByLibrary.simpleMessage(
       "Search for a currency...",

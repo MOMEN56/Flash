@@ -13,7 +13,11 @@ class CryptoInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(showSearchIcon: false, titlePaddingLeft: 50.h, rightPadding: 50,),
+      appBar: CustomAppBar(
+        showSearchIcon: false,
+        titlePaddingLeft: 50.h,
+        rightPadding: 50,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.w),
@@ -26,11 +30,14 @@ class CryptoInfoScreen extends StatelessWidget {
                 child: ClipOval(
                   child: Image.network(
                     crypto.image,
-                    width: 180.h,
-                    height: 180.h,
+                    width: MediaQuery.of(context).size.height * 0.2,
+                    height: MediaQuery.of(context).size.width * 0.4,
                     fit: BoxFit.cover,
                   ),
                 ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                   label: S.of(context).name, value: crypto.name),
@@ -51,23 +58,23 @@ class CryptoInfoScreen extends StatelessWidget {
               TextInfoTextInCryptoInfoScreenWidget(
                 label: S.of(context).high24h,
                 value: '${crypto.high24h.toStringAsFixed(2)} \$',
-                fontSize: 9.sp,
+                fontSize: 10.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                 label: S.of(context).low24h,
                 value: '${crypto.low24h.toStringAsFixed(2)} \$',
-                fontSize: 9.sp,
+                fontSize: 10.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                 label: S.of(context).priceChange24h,
                 value: '${crypto.priceChange24h.toStringAsFixed(2)} \$',
-                fontSize: 9.sp,
+                fontSize: 10.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                 label: S.of(context).priceChangePercentage24h,
                 value:
                     '${crypto.priceChangePercentage24h.toStringAsFixed(2)} %',
-                fontSize: 9.sp,
+                fontSize: 10.sp,
               ),
               TextInfoTextInCryptoInfoScreenWidget(
                   label: S.of(context).circulatingSupply,
