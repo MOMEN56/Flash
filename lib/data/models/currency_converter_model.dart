@@ -1,4 +1,3 @@
-// currency_converter_model.dart
 
 class CurrencyConverterModel {
    String comparisonCurrency;

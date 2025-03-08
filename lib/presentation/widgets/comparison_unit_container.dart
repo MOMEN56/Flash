@@ -28,7 +28,7 @@ class ComparisonUnitContainer extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             onUnitSelected(
-                unitMapping[unitName]!); // استدعاء دالة onUnitSelected
+                unitMapping[unitName]!); 
           },
           child: Container(
             padding:

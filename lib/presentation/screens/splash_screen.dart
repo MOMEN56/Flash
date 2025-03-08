@@ -1,7 +1,7 @@
 import 'package:flash/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// إضافة AppRouter
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,10 +33,10 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     });
 
-    // التوجيه بعد 3 ثواني
+    
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(
-          context, '/homeScreen'); // التوجيه إلى HomeScreen
+          context, '/homeScreen'); 
     });
   }
 

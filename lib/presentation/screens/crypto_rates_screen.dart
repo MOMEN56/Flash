@@ -39,7 +39,6 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
   @override
   void initState() {
     super.initState();
-    // لا تستدعي Localizations هنا، سنقوم بنقلها إلى didChangeDependencies.
   }
 
   @override
@@ -54,13 +53,13 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
   Future<void> fetchCryptos() async {
     try {
       final fetchedCryptos = await cryptoWebService.fetchCryptos();
-      if (!mounted) return; // التأكد من أن الويدجيت لا يزال موجودًا
+      if (!mounted) return; 
 
       setState(() {
         cryptos = fetchedCryptos;
         cryptoList.clear();
 
-        // تخزين الأسماء بناءً على اللغة
+        
         cryptoList.addAll(
           cryptos
               .map((crypto) =>
@@ -72,7 +71,7 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
         filteredCryptoList.addAll(cryptoList);
       });
     } catch (e) {
-      if (!mounted) return; // التأكد من أن الويدجيت لا يزال موجودًا
+      if (!mounted) return; 
       setState(() {
         errorMessage = 'Error fetching data';
       });
@@ -123,9 +122,9 @@ class _CryptoRatesScreenState extends State<CryptoRatesScreen> {
     return BlocListener<LocaleCubit, Locale>(
       listener: (context, locale) {
         if (_currentLocale != locale) {
-          // تحديث اللغة الحالية فقط إذا تغيرت
+          
           _currentLocale = locale;
-          fetchCryptos(); // إعادة جلب البيانات عند تغيير اللغة
+          fetchCryptos(); 
         }
       },
       child: Scaffold(

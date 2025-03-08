@@ -5,12 +5,12 @@ class CurrenciesWebService {
 
   CurrenciesWebService({required this.dio});
 
-  // دالة لجلب العملات بناءً على baseUrl
+  
   Future<Map<String, dynamic>> fetchRates(String baseUrl) async {
     try {
-      final response = await dio.get(baseUrl);  // استخدم الـ baseUrl الذي يتم تمريره
+      final response = await dio.get(baseUrl);  
       if (response.statusCode == 200) {
-        return response.data['conversion_rates'];  // العودة بمعدل التحويل
+        return response.data['conversion_rates'];  
       } else {
         throw Exception('Failed to load rates');
       }

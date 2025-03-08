@@ -9,13 +9,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
-  final Function(int) onScreenChange; // تابع لإخبار الشاشة بالتغيير
+  final Function(int) onScreenChange; 
 
   const CustomBottomNavigationBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
-    required this.onScreenChange, // إضافة تابع التغيير
+    required this.onScreenChange, 
   });
 
   @override
@@ -27,7 +27,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5.h),
       decoration: BoxDecoration(
         color:
-            Color(kPrimaryColor), // تغيير اللون أو جعله dynamic بناءً على الكود
+            Color(kPrimaryColor), 
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -44,7 +44,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icons.attach_money,
             label: S.of(context).currency,
             onTap: () {
-              onScreenChange(0); // استدعاء التغيير باستخدام onScreenChange
+              onScreenChange(0); 
             },
           ),
           _buildNavItem(
@@ -52,7 +52,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icons.currency_bitcoin,
             label: S.of(context).cyrpto,
             onTap: () {
-              onScreenChange(1); // استدعاء التغيير باستخدام onScreenChange
+              onScreenChange(1); 
             },
           ),
           _buildNavItem(
@@ -60,7 +60,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icons.precision_manufacturing,
             label: S.of(context).metal,
             onTap: () {
-              onScreenChange(2); // استدعاء التغيير باستخدام onScreenChange
+              onScreenChange(2); 
             },
           ),
         ],
@@ -94,7 +94,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             ),
           ),
           SizedBox(height: 4.h),
-          // الخط التحتاني للإشارة إلى العنصر المحدد
+          
           Container(
             height: 2.h,
             width: 25.w,

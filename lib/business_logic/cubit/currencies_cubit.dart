@@ -10,13 +10,13 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
   final CurrenciesWebService currenciesService;
   String baseCurrency = "USD";
 
-  // تخزين البيانات المحملة للحفاظ عليها عند التنقل
+  
   Map<String, CurrencyModel> cachedRates = {};
 
   CurrenciesCubit(this.currenciesService) : super(CurrenciesInitial());
 
   Future<void> fetchCurrencies() async {
-    // التحقق من وجود بيانات مخزنة لتجنب إعادة الجلب
+    
     if (cachedRates.containsKey(baseCurrency)) {
       emit(CurrenciesLoaded([cachedRates[baseCurrency]!]));
       return;
@@ -36,7 +36,7 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
         result: 'success',
         conversionRates: sanitizedRates,
       );
-      // تخزين البيانات في الكاش
+      
       cachedRates[baseCurrency] = currencyModel;
 
       emit(CurrenciesLoaded([currencyModel]));
@@ -47,6 +47,6 @@ class CurrenciesCubit extends Cubit<CurrenciesState> {
 
   void updateBaseCurrency(String newCurrency) {
     baseCurrency = newCurrency;
-    fetchCurrencies(); // جلب العملات إذا لم تكن موجودة في الكاش
+    fetchCurrencies(); 
   }
 }

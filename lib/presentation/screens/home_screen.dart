@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _checkInitialConnection();
-    // الاستماع لتغييرات الاتصال
+    
     Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> resultList) {
       _updateConnectionStatus(resultList);
     });
@@ -39,12 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _updateConnectionStatus(List<ConnectivityResult> resultList) {
     setState(() {
-      // التحقق من وجود اتصال
+      
       isConnected = resultList.isNotEmpty && resultList.first != ConnectivityResult.none;
       if (!isConnected) {
-        _currentIndex = -1; // الانتقال إلى شاشة "لا يوجد اتصال"
+        _currentIndex = -1; 
       } else if (_currentIndex == -1) {
-        _currentIndex = 0; // العودة إلى الشاشة الرئيسية عند استعادة الاتصال
+        _currentIndex = 0; 
       }
     });
   }
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
               index: _currentIndex,
               children: _screens,
             )
-          : NoConnectionScreen(), // عرض شاشة "لا يوجد اتصال"
+          : NoConnectionScreen(), 
       bottomNavigationBar: isConnected
           ? CustomBottomNavigationBar(
               currentIndex: _currentIndex,
@@ -72,9 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   _currentIndex = index;
                 });
               },
-              onScreenChange: _onScreenChange, // إرسال تابع التغيير
+              onScreenChange: _onScreenChange, 
             )
-          : null, // إخفاء الـ BottomNavigationBar عند عدم وجود اتصال
+          : null, 
     );
   }
 }

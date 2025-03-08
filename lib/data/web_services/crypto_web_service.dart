@@ -13,14 +13,14 @@ class CryptoWebService {
     final cacheManager = DefaultCacheManager();
     final cachedData = await cacheManager.getFileFromCache(baseCryptoUrl);
 
-    // إذا كانت البيانات موجودة في الكاش
+    
     if (cachedData != null) {
       print('Data loaded from cache');
       final data =
-          cachedData.file.readAsStringSync(); // قراءة البيانات من الكاش
+          cachedData.file.readAsStringSync(); 
       List<dynamic> jsonList = json.decode(data);
 
-      // تصفية "Lido Staked Ether" من البيانات
+      
       jsonList.removeWhere(
           (cryptoJson) => cryptoJson['name'] == 'Lido Staked Ether');
 
@@ -29,17 +29,17 @@ class CryptoWebService {
           .toList();
     } else {
       try {
-        // إذا لم تكن البيانات موجودة في الكاش، قم بتحميلها من الخادم
+        
         final response = await _dio.get(baseCryptoUrl);
 
         if (response.statusCode == 200) {
           List<dynamic> data = response.data;
 
-          // تصفية "Lido Staked Ether" من البيانات
-          // حفظ البيانات في الكاش
+          
+          
           cacheManager.putFile(baseCryptoUrl, utf8.encode(json.encode(data)));
 
-          // إرجاع البيانات المحملة
+          
           return data
               .map((cryptoJson) => CryptoModel.fromJson(cryptoJson))
               .toList();

@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flash/app_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flash/generated/l10n.dart';
-import 'package:device_preview/device_preview.dart'; // Import the device_preview package
+import 'package:device_preview/device_preview.dart'; 
 
 void main() {
   runApp(
@@ -32,15 +32,15 @@ class Flash extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => CurrenciesCubit(CurrenciesWebService(dio: Dio()))),
-            BlocProvider(create: (context) => LocaleCubit()), // ✅ إضافة LocaleCubit
+            BlocProvider(create: (context) => LocaleCubit()), 
           ],
-          child: BlocBuilder<LocaleCubit, Locale>( // ✅ ربط الحالة بالتطبيق
+          child: BlocBuilder<LocaleCubit, Locale>( 
             builder: (context, locale) {
               return MaterialApp(
                 theme: ThemeData().copyWith(
                   scaffoldBackgroundColor: const Color(kPrimaryColor),
                 ),
-                locale: locale, // ✅ جعل اللغة ديناميكية
+                locale: locale, 
                 localizationsDelegates:  [
                   S.delegate,
                   GlobalMaterialLocalizations.delegate,

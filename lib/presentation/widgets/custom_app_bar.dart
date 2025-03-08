@@ -36,7 +36,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: const IconThemeData(color: Colors.white),
 title: Center(
   child: Row(
-    mainAxisSize: MainAxisSize.min, // يجعل الحجم محدودًا بالعناصر فقط
+    mainAxisSize: MainAxisSize.min, 
     children: [
       Text(
         S.of(context).AppBarTitle,
@@ -56,7 +56,7 @@ title: Center(
               onTap: () {
                 context
                     .read<LocaleCubit>()
-                    .toggleLocale(); // تغيير اللغة عند الضغط
+                    .toggleLocale(); 
               },
               child: Padding(
                 padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.015,right: isArabic? MediaQuery.of(context).size.width * 0.03:MediaQuery.of(context).size.width * 0.00,left: isArabic?MediaQuery.of(context).size.width * 0.03 :MediaQuery.of(context).size.width * 0.03),
@@ -81,7 +81,7 @@ title: Center(
         if (showSearchIcon)
           IconButton(
             icon: Icon(Icons.search,
-                color: Colors.white, size: 28.w), // تأكيد الحجم الثابت
+                color: Colors.white, size: 28.w), 
             onPressed: onSearchPressed,
           ),
       ],

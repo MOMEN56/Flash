@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash/presentation/widgets/custom_app_bar.dart';
-import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; // Import here
+import 'package:flash/presentation/widgets/custom_bottom_navigation_bar.dart'; 
 import 'package:flash/data/web_services/currency_flag_web_services.dart';
 
 class CurrencyConverterScreen extends StatefulWidget {
@@ -23,12 +23,12 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   bool isSwapped = false;
   final TextEditingController _amountController = TextEditingController();
   double result = 1.0;
-  double temp = 0.0; // Temporary variable to store the swapped value
+  double temp = 0.0; 
 
   void _swapCurrencies() {
     setState(() {
-      // Swap only the rates using temp variable
-      // Toggle the swap flag
+      
+      
       isSwapped = !isSwapped;
       result = 0.0;
       _amountController.clear();
@@ -56,7 +56,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
     String translatedCurrencyName = getTranslatedCurrencyName(
         currencyCode, Localizations.localeOf(context));
 
-    // تحديد إذا كانت اللغة هي العربية
+    
     Locale currentLocale = Localizations.localeOf(context);
     bool isArabic = currentLocale.languageCode == 'ar';
     double MediaQueryHeight = MediaQuery.of(context).size.height;
@@ -106,7 +106,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                 fontSize: isArabic
                     ? MediaQueryWidth * 0.04
                     : MediaQueryWidth *
-                        0.06, // هنا قمنا بتحديد حجم الخط حسب اللغة
+                        0.06, 
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -254,7 +254,7 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
                   size: MediaQueryHeight * 0.08,
                   color: Colors.white,
                 ),
-                onPressed: _swapCurrencies, // Call the swap method
+                onPressed: _swapCurrencies, 
               ),
             ),
             AnimatedPositioned(

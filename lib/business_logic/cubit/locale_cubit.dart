@@ -7,24 +7,24 @@ class LocaleCubit extends Cubit<Locale> {
     _loadSavedLocale();
   }
 
-  // تحميل اللغة المحفوظة من SharedPreferences
+  
   Future<void> _loadSavedLocale() async {
     final prefs = await SharedPreferences.getInstance();
-    final languageCode = prefs.getString('languageCode') ?? 'en'; // إذا لم توجد لغة محفوظة، نستخدم 'en'
-    final countryCode = prefs.getString('countryCode') ?? ''; // استرجاع رمز الدولة إذا كان موجودًا
+    final languageCode = prefs.getString('languageCode') ?? 'en'; 
+    final countryCode = prefs.getString('countryCode') ?? ''; 
     emit(Locale(languageCode, countryCode));
   }
 
-  // تغيير اللغة وحفظها
+  
   void toggleLocale() async {
     final currentLocale = state.languageCode;
     final newLocale = currentLocale == 'ar' ? const Locale('en', 'US') : const Locale('ar', 'AE');
 
-    // حفظ اللغة الجديدة في SharedPreferences
+    
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('languageCode', newLocale.languageCode);
     await prefs.setString('countryCode', newLocale.countryCode ?? '');
 
-    emit(newLocale); // إصدار اللغة الجديدة
+    emit(newLocale); 
   }
 }

@@ -19,14 +19,14 @@ class _NoConnectionScreenState extends State<NoConnectionScreen> {
         showSearchIcon: false,
         titlePaddingLeft: 0.h,
         showBackButton: false,
-        rightPadding:0, // تحديد عرض العنوان بشكل صحيح
+        rightPadding:0, 
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/images/undraw_signal-searching_yod3__1_-removebg-preview.png'),
-            // الصورة التي توضح عدم الاتصال
+            
           ],
         ),
       ),

@@ -1,4 +1,4 @@
-// lib/constants/crypto_translations.dart
+
 
 import 'package:flutter/material.dart';
 
@@ -40,7 +40,7 @@ String getTranslatedCryptoName(String cryptoName, Locale currentLocale) {
   }
   return cryptoName;
 }
-// lib/constants/metal_translations.dart
+
 
 Map<String, String> metalTranslations = {
   'gold': 'ذهب',
@@ -147,7 +147,7 @@ Map<String, String> currencyTranslations = {
   "USD": "دولار أمريكي",
   "ZAR": "راند جنوب أفريقي",
   "ZWL": "دولار زيمبابوي",
-  // Add remaining currencies as needed
+  
 };
 
 String getTranslatedCurrencyName(String currencyCode, Locale currentLocale) {

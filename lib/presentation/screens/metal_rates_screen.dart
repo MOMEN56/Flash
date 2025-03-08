@@ -8,7 +8,7 @@ import 'package:flash/presentation/widgets/error_message_widget.dart';
 import 'package:flash/presentation/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flash/constants.dart'; // Ensure the constants file is imported
+import 'package:flash/constants.dart'; 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flash/business_logic/cubit/locale_cubit.dart';
 
@@ -110,7 +110,7 @@ class _MetalRatesScreenState extends State<MetalRatesScreen> {
       listener: (context, locale) {
         if (_currentLocale != locale) {
           _currentLocale = locale;
-          fetchMetalPrices(); // إعادة جلب البيانات عند تغيير اللغة
+          fetchMetalPrices(); 
         }
       },
       child: Scaffold(

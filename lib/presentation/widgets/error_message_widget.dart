@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ErrorMessageWidget extends StatelessWidget {
-  final String errorMessage; // استقبال المتغير هنا
+  final String errorMessage; 
 
-  const ErrorMessageWidget({super.key, required this.errorMessage}); // تمرير المتغير من الويدجت الأب
+  const ErrorMessageWidget({super.key, required this.errorMessage}); 
 
   @override
   Widget build(BuildContext context) {

@@ -13,16 +13,16 @@ class LoadingErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator()); // عرض مؤشر التحميل
+      return const Center(child: CircularProgressIndicator()); 
     } else if (errorMessage != null && errorMessage!.isNotEmpty) {
       return Center(
         child: Text(
           errorMessage!, 
           style: TextStyle(color: Colors.red, fontSize: 16),
         ),
-      ); // عرض رسالة الخطأ
+      ); 
     } else {
-      return const SizedBox.shrink(); // في حالة عدم وجود تحميل أو خطأ
+      return const SizedBox.shrink(); 
     }
   }
 }

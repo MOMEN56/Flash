@@ -5,16 +5,16 @@ import 'package:flash/data/models/matal_model.dart';
 class WebService {
   final Dio dio = Dio();
 
-  // الدالة لجلب بيانات المعادن من الـ API
+  
   Future<MetalModel> fetchMetalPrices(String unit) async {
-    final urlMetal = '$baseMetal$unit';  // دمج baseMetal و unit في الرابط
+    final urlMetal = '$baseMetal$unit';  
 
     try {
       final response = await dio.get(urlMetal);
 
-      // التحقق من الاستجابة
+      
       if (response.statusCode == 200) {
-        // استخراج البيانات الخاصة بالمعادن فقط وتحويل القيم إلى double
+        
         final metalData = {
           "gold": (response.data['metals']['gold'] as num).toDouble(),
           "silver": (response.data['metals']['silver'] as num).toDouble(),
@@ -27,7 +27,7 @@ class WebService {
           "zinc": (response.data['metals']['zinc'] as num).toDouble(),
         };
 
-        // إعادة الكائن MetalModel مع بيانات المعادن
+        
         return MetalModel(metalData);
       } else {
         throw Exception('Failed to load metal prices');
